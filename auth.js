@@ -14,7 +14,7 @@ const Auth = {
                 userData.password
             );
 
-            await db.collection('users').doc(userCredential.user.uid).set({
+            await db.collection('iuem').doc(userCredential.user.uid).set({
                 userId: userData.userId,
                 userName: userData.userName,
                 email: userData.email,
@@ -39,7 +39,7 @@ const Auth = {
     login: async function(email, password) {
         try {
             const userCredential = await auth.signInWithEmailAndPassword(email, password);
-            const userDoc = await db.collection('users').doc(userCredential.user.uid).get();
+            const userDoc = await db.collection('iuem').doc(userCredential.user.uid).get();
 
             if (userDoc.exists) {
                 this.currentUser = {
@@ -93,7 +93,7 @@ const Auth = {
     // 모든 사용자 가져오기 (관리자용)
     getAllUsers: async function() {
         try {
-            const snapshot = await db.collection('users').get();
+            const snapshot = await db.collection('iuem').get();
             return snapshot.docs.map(doc => ({ uid: doc.id, ...doc.data() }));
         } catch (error) {
             console.error('사용자 목록 조회 오류:', error);
@@ -104,7 +104,7 @@ const Auth = {
     // 관리자 권한 부여
     grantAdmin: async function(uid) {
         try {
-            await db.collection('users').doc(uid).update({ isAdmin: true });
+            await db.collection('iuem').doc(uid).update({ isAdmin: true });
             return { success: true, message: '관리자 권한이 부여되었습니다.' };
         } catch (error) {
             console.error('권한 부여 오류:', error);
@@ -115,7 +115,7 @@ const Auth = {
     // 관리자 권한 해제
     revokeAdmin: async function(uid) {
         try {
-            await db.collection('users').doc(uid).update({ isAdmin: false });
+            await db.collection('iuem').doc(uid).update({ isAdmin: false });
             return { success: true, message: '관리자 권한이 해제되었습니다.' };
         } catch (error) {
             console.error('권한 해제 오류:', error);
@@ -127,7 +127,7 @@ const Auth = {
 // Firebase 인증 상태 변경 시 UI 업데이트
 auth.onAuthStateChanged(async (user) => {
     if (user) {
-        const userDoc = await db.collection('users').doc(user.uid).get();
+        const userDoc = await db.collection('iuem').doc(user.uid).get();
         if (userDoc.exists) {
             Auth.currentUser = {
                 uid: user.uid,
