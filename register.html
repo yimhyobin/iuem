@@ -110,6 +110,11 @@
         </div>
     </footer>
 
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
     <script src="data.js"></script>
     <script src="auth.js"></script>
     <script>
@@ -166,16 +171,16 @@
         });
 
         // 회원가입 폼 제출
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-
-            if (!isIdChecked) {
-                alert('아이디 중복확인을 해주세요.');
-                return;
-            }
 
             const password = document.getElementById('password').value;
             const passwordConfirm = document.getElementById('passwordConfirm').value;
+
+            if (password.length < 6) {
+                alert('비밀번호는 6자 이상이어야 합니다.');
+                return;
+            }
 
             if (password !== passwordConfirm) {
                 alert('비밀번호가 일치하지 않습니다.');
@@ -190,7 +195,7 @@
                 phone: document.getElementById('phone').value
             };
 
-            const result = Auth.register(userData);
+            const result = await Auth.register(userData);
             if (result.success) {
                 alert(result.message);
                 window.location.href = 'login.html';

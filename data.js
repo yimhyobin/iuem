@@ -1,11 +1,9 @@
 /**
  * 데이터 관리 모듈
- * localStorage를 사용하여 데이터를 저장하고 관리합니다.
- * 나중에 API 연동 시 이 부분을 수정하면 됩니다.
+ * Firebase Firestore를 사용하여 데이터를 저장하고 관리합니다.
  */
 
 const DataManager = {
-    // 초기 샘플 데이터
     samplePosts: [
         {
             id: '1',
@@ -114,199 +112,180 @@ const DataManager = {
         }
     ],
 
-    // 데이터 초기화
-    init: function() {
-        if (!localStorage.getItem('posts')) {
-            localStorage.setItem('posts', JSON.stringify(this.samplePosts));
+    init: async function() {
+        try {
+            const snapshot = await db.collection('posts').limit(1).get();
+            if (snapshot.empty) {
+                const batch = db.batch();
+                this.samplePosts.forEach(post => {
+                    const docRef = db.collection('posts').doc(post.id);
+                    batch.set(docRef, post);
+                });
+                await batch.commit();
+                console.log('샘플 데이터 초기화 완료');
+            }
+        } catch (error) {
+            console.error('데이터 초기화 오류:', error);
         }
     },
 
-    // 모든 게시글 가져오기
-    getAllPosts: function() {
-        this.init();
-        return JSON.parse(localStorage.getItem('posts')) || [];
-    },
-
-    // 카테고리별 게시글 가져오기
-    getPostsByCategory: function(category) {
-        const posts = this.getAllPosts();
-        if (category === 'all') return posts;
-        return posts.filter(post => post.category === category);
-    },
-
-    // 단일 게시글 가져오기
-    getPost: function(id) {
-        const posts = this.getAllPosts();
-        return posts.find(post => post.id === id);
-    },
-
-    // 게시글 추가
-    addPost: function(postData) {
+    getAllPosts: async function() {
         try {
-            const posts = this.getAllPosts();
+            const snapshot = await db.collection('posts').orderBy('createdAt', 'desc').get();
+            return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        } catch (error) {
+            console.error('게시글 조회 오류:', error);
+            return [];
+        }
+    },
+
+    getPostsByCategory: async function(category) {
+        try {
+            let query = db.collection('posts');
+            if (category !== 'all') {
+                query = query.where('category', '==', category);
+            }
+            const snapshot = await query.orderBy('createdAt', 'desc').get();
+            return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        } catch (error) {
+            console.error('카테고리별 조회 오류:', error);
+            return [];
+        }
+    },
+
+    getPost: async function(id) {
+        try {
+            const doc = await db.collection('posts').doc(id).get();
+            if (doc.exists) {
+                return { id: doc.id, ...doc.data() };
+            }
+            return null;
+        } catch (error) {
+            console.error('게시글 조회 오류:', error);
+            return null;
+        }
+    },
+
+    addPost: async function(postData) {
+        try {
             const newPost = {
                 ...postData,
-                id: Date.now().toString(),
                 createdAt: new Date().toISOString().split('T')[0],
                 updatedAt: new Date().toISOString().split('T')[0]
             };
-            posts.unshift(newPost);
-            localStorage.setItem('posts', JSON.stringify(posts));
-            return { success: true, message: '게시글이 등록되었습니다.', post: newPost };
+            const docRef = await db.collection('posts').add(newPost);
+            return { success: true, message: '게시글이 등록되었습니다.', post: { id: docRef.id, ...newPost } };
         } catch (error) {
+            console.error('게시글 등록 오류:', error);
             return { success: false, message: '게시글 등록에 실패했습니다.' };
         }
     },
 
-    // 게시글 수정
-    updatePost: function(id, postData) {
+    updatePost: async function(id, postData) {
         try {
-            const posts = this.getAllPosts();
-            const index = posts.findIndex(post => post.id === id);
-            if (index === -1) {
-                return { success: false, message: '게시글을 찾을 수 없습니다.' };
-            }
-            posts[index] = {
-                ...posts[index],
+            await db.collection('posts').doc(id).update({
                 ...postData,
                 updatedAt: new Date().toISOString().split('T')[0]
-            };
-            localStorage.setItem('posts', JSON.stringify(posts));
+            });
             return { success: true, message: '게시글이 수정되었습니다.' };
         } catch (error) {
+            console.error('게시글 수정 오류:', error);
             return { success: false, message: '게시글 수정에 실패했습니다.' };
         }
     },
 
-    // 게시글 삭제
-    deletePost: function(id) {
+    deletePost: async function(id) {
         try {
-            const posts = this.getAllPosts();
-            const filtered = posts.filter(post => post.id !== id);
-            localStorage.setItem('posts', JSON.stringify(filtered));
+            await db.collection('posts').doc(id).delete();
             return { success: true, message: '게시글이 삭제되었습니다.' };
         } catch (error) {
+            console.error('게시글 삭제 오류:', error);
             return { success: false, message: '게시글 삭제에 실패했습니다.' };
         }
     },
 
-    // 여러 게시글 삭제
-    deletePosts: function(ids) {
+    deletePosts: async function(ids) {
         try {
-            const posts = this.getAllPosts();
-            const filtered = posts.filter(post => !ids.includes(post.id));
-            localStorage.setItem('posts', JSON.stringify(filtered));
-            return { success: true, message: `${ids.length}개의 게시글이 삭제되었습니다.` };
+            const batch = db.batch();
+            ids.forEach(id => {
+                const docRef = db.collection('posts').doc(id);
+                batch.delete(docRef);
+            });
+            await batch.commit();
+            return { success: true, message: ids.length + '개의 게시글이 삭제되었습니다.' };
         } catch (error) {
+            console.error('게시글 삭제 오류:', error);
             return { success: false, message: '게시글 삭제에 실패했습니다.' };
         }
     },
 
-    // 검색
-    searchPosts: function(filters) {
-        let posts = this.getAllPosts();
-
-        // 키워드 검색
-        if (filters.keyword) {
-            const keyword = filters.keyword.toLowerCase();
-            posts = posts.filter(post =>
-                post.title.toLowerCase().includes(keyword) ||
-                (post.summary && post.summary.toLowerCase().includes(keyword)) ||
-                (post.content && post.content.toLowerCase().includes(keyword))
-            );
-        }
-
-        // 카테고리 필터
-        if (filters.category && filters.category !== 'all') {
-            posts = posts.filter(post => post.category === filters.category);
-        }
-
-        // 지역 필터
-        if (filters.regions && filters.regions.length > 0) {
-            posts = posts.filter(post => filters.regions.includes(post.region));
-        }
-
-        // 지원분야 필터
-        if (filters.supportFields && filters.supportFields.length > 0) {
-            posts = posts.filter(post => filters.supportFields.includes(post.supportField));
-        }
-
-        // 대상 필터
-        if (filters.targets && filters.targets.length > 0) {
-            posts = posts.filter(post => filters.targets.includes(post.target));
-        }
-
-        // 연령대 필터
-        if (filters.ages && filters.ages.length > 0) {
-            posts = posts.filter(post => filters.ages.includes(post.age));
-        }
-
-        // 창업업력 필터
-        if (filters.careers && filters.careers.length > 0) {
-            posts = posts.filter(post => filters.careers.includes(post.career));
-        }
-
-        // 정렬
-        if (filters.sort) {
-            switch (filters.sort) {
-                case 'latest':
-                    posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-                    break;
-                case 'startDate':
-                    posts.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
-                    break;
-                case 'endDate':
-                    posts.sort((a, b) => new Date(a.endDate) - new Date(b.endDate));
-                    break;
-            }
-        }
-
-        return posts;
-    },
-
-    // 데이터 내보내기
-    exportData: function() {
-        const data = {
-            posts: this.getAllPosts(),
-            exportedAt: new Date().toISOString()
-        };
-        return JSON.stringify(data, null, 2);
-    },
-
-    // 데이터 가져오기
-    importData: function(jsonString) {
+    searchPosts: async function(filters) {
         try {
-            const data = JSON.parse(jsonString);
-            if (data.posts && Array.isArray(data.posts)) {
-                localStorage.setItem('posts', JSON.stringify(data.posts));
-                return { success: true, message: `${data.posts.length}개의 게시글을 가져왔습니다.` };
-            }
-            return { success: false, message: '올바른 데이터 형식이 아닙니다.' };
-        } catch (error) {
-            return { success: false, message: '데이터 가져오기에 실패했습니다.' };
-        }
-    },
+            let posts = await this.getAllPosts();
 
-    // 전체 데이터 삭제
-    clearAll: function() {
-        localStorage.removeItem('posts');
-        return { success: true, message: '모든 데이터가 삭제되었습니다.' };
+            if (filters.keyword) {
+                const keyword = filters.keyword.toLowerCase();
+                posts = posts.filter(post =>
+                    post.title.toLowerCase().includes(keyword) ||
+                    (post.summary && post.summary.toLowerCase().includes(keyword)) ||
+                    (post.content && post.content.toLowerCase().includes(keyword))
+                );
+            }
+
+            if (filters.category && filters.category !== 'all') {
+                posts = posts.filter(post => post.category === filters.category);
+            }
+
+            if (filters.regions && filters.regions.length > 0) {
+                posts = posts.filter(post => filters.regions.includes(post.region));
+            }
+
+            if (filters.supportFields && filters.supportFields.length > 0) {
+                posts = posts.filter(post => filters.supportFields.includes(post.supportField));
+            }
+
+            if (filters.targets && filters.targets.length > 0) {
+                posts = posts.filter(post => filters.targets.includes(post.target));
+            }
+
+            if (filters.ages && filters.ages.length > 0) {
+                posts = posts.filter(post => filters.ages.includes(post.age));
+            }
+
+            if (filters.careers && filters.careers.length > 0) {
+                posts = posts.filter(post => filters.careers.includes(post.career));
+            }
+
+            if (filters.sort) {
+                switch (filters.sort) {
+                    case 'latest':
+                        posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                        break;
+                    case 'startDate':
+                        posts.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+                        break;
+                    case 'endDate':
+                        posts.sort((a, b) => new Date(a.endDate) - new Date(b.endDate));
+                        break;
+                }
+            }
+
+            return posts;
+        } catch (error) {
+            console.error('검색 오류:', error);
+            return [];
+        }
     }
 };
 
-// 카테고리 매핑
 const CategoryMap = {
     'support': '지원사업/교육',
     'event': '행사/축제',
     'notice': '공지사항'
 };
 
-// 상태 매핑
 const StatusMap = {
     'ongoing': '진행중',
     'upcoming': '접수예정',
     'closed': '마감'
 };
-
-// 초기화
-DataManager.init();
