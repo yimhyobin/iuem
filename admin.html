@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 대시보드 - 창업지원 포털</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 헤더 -->
+    <header class="header admin-header">
+        <div class="header-inner">
+            <div class="logo">
+                <a href="index.html">
+                    <span class="logo-text">창업지원 포털</span>
+                </a>
+                <span class="admin-badge">관리자</span>
+            </div>
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="index.html?category=support" class="nav-link">지원사업/교육</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="index.html?category=event" class="nav-link">행사/축제</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="index.html?category=notice" class="nav-link">공지사항</a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="header-utils">
+                <span class="user-info" id="userInfo"></span>
+                <button class="btn-logout" onclick="logout()">로그아웃</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+        <div class="container">
+            <div class="admin-layout">
+                <!-- 사이드바 -->
+                <aside class="admin-sidebar">
+                    <nav class="admin-nav">
+                        <h3 class="sidebar-title">관리자 메뉴</h3>
+                        <ul class="sidebar-menu">
+                            <li class="menu-item active" data-menu="posts">
+                                <a href="#posts">게시글 관리</a>
+                            </li>
+                            <li class="menu-item" data-menu="users">
+                                <a href="#users">회원 관리</a>
+                            </li>
+                            <li class="menu-item" data-menu="settings">
+                                <a href="#settings">설정</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </aside>
+
+                <!-- 메인 영역 -->
+                <div class="admin-main">
+                    <!-- 게시글 관리 섹션 -->
+                    <section class="admin-section" id="postsSection">
+                        <div class="section-header">
+                            <h2>게시글 관리</h2>
+                            <a href="admin-post.html" class="btn-primary">새 글 작성</a>
+                        </div>
+
+                        <!-- 카테고리 탭 -->
+                        <div class="category-tabs">
+                            <button class="tab-btn active" data-category="all">전체</button>
+                            <button class="tab-btn" data-category="support">지원사업/교육</button>
+                            <button class="tab-btn" data-category="event">행사/축제</button>
+                            <button class="tab-btn" data-category="notice">공지사항</button>
+                        </div>
+
+                        <!-- 게시글 목록 -->
+                        <div class="admin-table-wrap">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th class="check-col">
+                                            <input type="checkbox" id="checkAll" onclick="toggleCheckAll()">
+                                        </th>
+                                        <th class="num-col">번호</th>
+                                        <th class="category-col">카테고리</th>
+                                        <th class="title-col">제목</th>
+                                        <th class="status-col">상태</th>
+                                        <th class="date-col">등록일</th>
+                                        <th class="action-col">관리</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="postTableBody">
+                                    <!-- 동적으로 생성됩니다 -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- 버튼 영역 -->
+                        <div class="table-actions">
+                            <button class="btn-danger" onclick="deleteSelected()">선택 삭제</button>
+                        </div>
+
+                        <!-- 페이지네이션 -->
+                        <div class="pagination" id="postPagination">
+                            <!-- 동적으로 생성됩니다 -->
+                        </div>
+                    </section>
+
+                    <!-- 회원 관리 섹션 -->
+                    <section class="admin-section hidden" id="usersSection">
+                        <div class="section-header">
+                            <h2>회원 관리</h2>
+                        </div>
+
+                        <div class="admin-table-wrap">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th class="num-col">번호</th>
+                                        <th>아이디</th>
+                                        <th>이름</th>
+                                        <th>이메일</th>
+                                        <th>가입일</th>
+                                        <th>구분</th>
+                                        <th class="action-col">관리</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="userTableBody">
+                                    <!-- 동적으로 생성됩니다 -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <!-- 설정 섹션 -->
+                    <section class="admin-section hidden" id="settingsSection">
+                        <div class="section-header">
+                            <h2>설정</h2>
+                        </div>
+
+                        <div class="settings-content">
+                            <div class="settings-group">
+                                <h3>API 설정</h3>
+                                <p class="settings-desc">외부 API를 연동하여 데이터를 자동으로 가져올 수 있습니다.</p>
+                                <div class="form-group">
+                                    <label for="apiKey">API 키</label>
+                                    <input type="text" id="apiKey" placeholder="API 키를 입력하세요">
+                                </div>
+                                <div class="form-group">
+                                    <label for="apiEndpoint">API 엔드포인트</label>
+                                    <input type="url" id="apiEndpoint" placeholder="https://api.example.com">
+                                </div>
+                                <button class="btn-primary" onclick="saveApiSettings()">저장</button>
+                            </div>
+
+                            <div class="settings-group">
+                                <h3>데이터 관리</h3>
+                                <p class="settings-desc">저장된 데이터를 관리합니다.</p>
+                                <div class="settings-buttons">
+                                    <button class="btn-secondary" onclick="exportData()">데이터 내보내기</button>
+                                    <button class="btn-secondary" onclick="importData()">데이터 가져오기</button>
+                                    <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImport(event)">
+                                    <button class="btn-danger" onclick="clearAllData()">전체 삭제</button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-info">
+                <p class="copyright">© 2025 창업지원 포털. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="data.js"></script>
+    <script src="auth.js"></script>
+    <script src="admin.js"></script>
+    <script>
+        // 페이지 로드 시 관리자 권한 확인
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = Auth.getCurrentUser();
+            if (!user || !user.isAdmin) {
+                alert('관리자 권한이 필요합니다.');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            document.getElementById('userInfo').textContent = user.userName + '님';
+            loadPosts();
+            loadUsers();
+        });
+
+        // 로그아웃
+        function logout() {
+            Auth.logout();
+            window.location.href = 'index.html';
+        }
+
+        // 사이드바 메뉴 전환
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const menu = this.dataset.menu;
+
+                // 메뉴 활성화
+                document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+                this.classList.add('active');
+
+                // 섹션 전환
+                document.querySelectorAll('.admin-section').forEach(s => s.classList.add('hidden'));
+                document.getElementById(menu + 'Section').classList.remove('hidden');
+            });
+        });
+
+        // 카테고리 탭 전환
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                loadPosts(this.dataset.category);
+            });
+        });
+    </script>
+</body>
+</html>

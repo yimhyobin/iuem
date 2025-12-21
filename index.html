@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>창업지원 포털</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 헤더 -->
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo">
+                <a href="index.html">
+                    <span class="logo-text">창업지원 포털</span>
+                </a>
+            </div>
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li class="nav-item active" data-category="support">
+                        <a href="#" class="nav-link">지원사업/교육</a>
+                    </li>
+                    <li class="nav-item" data-category="event">
+                        <a href="#" class="nav-link">행사/축제</a>
+                    </li>
+                    <li class="nav-item" data-category="notice">
+                        <a href="#" class="nav-link">공지사항</a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="header-utils" id="headerUtils">
+                <!-- 로그인 상태에 따라 동적으로 변경됩니다 -->
+                <a href="login.html" class="btn-login">로그인</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+        <div class="container">
+            <!-- 페이지 타이틀 -->
+            <div class="page-title">
+                <h1 id="pageTitle">지원사업/교육</h1>
+                <p class="page-desc" id="pageDesc">다양한 창업 지원사업과 교육 프로그램을 검색하세요.</p>
+            </div>
+
+            <!-- 검색 영역 -->
+            <div class="search-section">
+                <!-- 키워드 검색 -->
+                <div class="keyword-search">
+                    <input type="text" id="searchKeyword" class="search-input" placeholder="검색어를 입력하세요">
+                    <button type="button" class="btn-search" onclick="performSearch()">
+                        <span>검색</span>
+                    </button>
+                </div>
+
+                <!-- 상세검색 토글 버튼 -->
+                <button type="button" class="btn-detail-toggle" onclick="toggleDetailSearch()">
+                    <span>상세검색</span>
+                    <span class="arrow-icon">▼</span>
+                </button>
+
+                <!-- 상세검색 영역 -->
+                <div class="detail-search" id="detailSearch">
+                    <!-- 주관부처 -->
+                    <div class="filter-row">
+                        <div class="filter-label">주관부처</div>
+                        <div class="filter-content">
+                            <div class="filter-search-box">
+                                <input type="text" class="filter-search-input" placeholder="부처 검색" id="deptSearch">
+                                <button type="button" class="btn-filter-search">검색</button>
+                            </div>
+                            <div class="filter-tags" id="deptTags"></div>
+                            <div class="filter-options" id="deptOptions">
+                                <label class="filter-option">
+                                    <input type="checkbox" name="department" value="중소벤처기업부"> 중소벤처기업부
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="department" value="과학기술정보통신부"> 과학기술정보통신부
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="department" value="산업통상자원부"> 산업통상자원부
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="department" value="문화체육관광부"> 문화체육관광부
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="department" value="고용노동부"> 고용노동부
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="department" value="농림축산식품부"> 농림축산식품부
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="department" value="해양수산부"> 해양수산부
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="department" value="국토교통부"> 국토교통부
+                                </label>
+                            </div>
+                            <p class="filter-notice">* 최대 5개까지 선택 가능합니다.</p>
+                        </div>
+                    </div>
+
+                    <!-- 지원분야 -->
+                    <div class="filter-row">
+                        <div class="filter-label">지원분야</div>
+                        <div class="filter-content">
+                            <div class="filter-options checkbox-group">
+                                <label class="filter-option">
+                                    <input type="checkbox" name="supportField" value="사업화"> 사업화
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="supportField" value="기술개발(R&D)"> 기술개발(R&D)
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="supportField" value="시설·공간·보육"> 시설·공간·보육
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="supportField" value="멘토링·컨설팅·교육"> 멘토링·컨설팅·교육
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="supportField" value="글로벌"> 글로벌
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="supportField" value="인력"> 인력
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="supportField" value="융자·보증"> 융자·보증
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="supportField" value="행사·네트워크"> 행사·네트워크
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="supportField" value="창업교육"> 창업교육
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 지역 -->
+                    <div class="filter-row">
+                        <div class="filter-label">지역</div>
+                        <div class="filter-content">
+                            <div class="filter-options checkbox-group">
+                                <label class="filter-option">
+                                    <input type="checkbox" name="region" value="전국"> 전국
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="region" value="서울"> 서울
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="region" value="부산"> 부산
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="region" value="대구"> 대구
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="region" value="인천"> 인천
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="region" value="광주"> 광주
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="region" value="대전"> 대전
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="region" value="울산"> 울산
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="region" value="세종"> 세종
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="region" value="경기"> 경기
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="region" value="강원"> 강원
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="region" value="충북"> 충북
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="region" value="충남"> 충남
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="region" value="전북"> 전북
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="region" value="전남"> 전남
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="region" value="경북"> 경북
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="region" value="경남"> 경남
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="region" value="제주"> 제주
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 대상 -->
+                    <div class="filter-row">
+                        <div class="filter-label">대상</div>
+                        <div class="filter-content">
+                            <div class="filter-options checkbox-group">
+                                <label class="filter-option">
+                                    <input type="checkbox" name="target" value="청소년"> 청소년
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="target" value="대학생"> 대학생
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="target" value="일반인"> 일반인
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="target" value="대학"> 대학
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="target" value="연구기관"> 연구기관
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="target" value="일반기업"> 일반기업
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 연령대 -->
+                    <div class="filter-row">
+                        <div class="filter-label">연령대</div>
+                        <div class="filter-content">
+                            <div class="filter-options checkbox-group">
+                                <label class="filter-option">
+                                    <input type="checkbox" name="age" value="만 20세 미만"> 만 20세 미만
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="age" value="만 20세 ~ 29세"> 만 20세 ~ 29세
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="age" value="만 30세 ~ 39세"> 만 30세 ~ 39세
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="age" value="만 40세 이상"> 만 40세 이상
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 창업업력 -->
+                    <div class="filter-row">
+                        <div class="filter-label">창업업력</div>
+                        <div class="filter-content">
+                            <div class="filter-options checkbox-group">
+                                <label class="filter-option">
+                                    <input type="checkbox" name="career" value="예비창업자"> 예비창업자
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="career" value="1년 미만"> 1년 미만
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="career" value="1년 ~ 3년 미만"> 1년 ~ 3년 미만
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="career" value="3년 ~ 5년 미만"> 3년 ~ 5년 미만
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="career" value="5년 ~ 7년 미만"> 5년 ~ 7년 미만
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="career" value="7년 ~ 10년 미만"> 7년 ~ 10년 미만
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="career" value="10년 이상"> 10년 이상
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 검색/초기화 버튼 -->
+                    <div class="filter-buttons">
+                        <button type="button" class="btn-reset" onclick="resetFilters()">초기화</button>
+                        <button type="button" class="btn-apply" onclick="applyFilters()">검색</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 선택된 필터 태그 영역 -->
+            <div class="selected-filters" id="selectedFilters">
+                <!-- 선택된 필터 태그가 여기에 표시됩니다 -->
+            </div>
+
+            <!-- 결과 영역 -->
+            <div class="results-section">
+                <!-- 결과 헤더 -->
+                <div class="results-header">
+                    <div class="results-count">
+                        총 <strong id="totalCount">0</strong>건
+                    </div>
+                    <div class="results-sort">
+                        <select id="sortSelect" class="sort-select" onchange="changeSort()">
+                            <option value="latest">공고등록순</option>
+                            <option value="startDate">시작일순</option>
+                            <option value="endDate">마감순</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 결과 리스트 -->
+                <div class="results-list" id="resultsList">
+                    <!-- 동적으로 생성됩니다 -->
+                </div>
+
+                <!-- 페이지네이션 -->
+                <div class="pagination" id="pagination">
+                    <!-- 동적으로 생성됩니다 -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-info">
+                <p class="copyright">© 2025 창업지원 포털. All rights reserved.</p>
+                <ul class="footer-links">
+                    <li><a href="#">이용약관</a></li>
+                    <li><a href="#">개인정보처리방침</a></li>
+                    <li><a href="#">사이트맵</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script src="data.js"></script>
+    <script src="auth.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // 현재 카테고리
+        let currentCategory = 'support';
+        let currentPage = 1;
+        const itemsPerPage = 10;
+
+        // 페이지 로드 시
+        document.addEventListener('DOMContentLoaded', function() {
+            // URL 파라미터에서 카테고리 확인
+            const urlParams = new URLSearchParams(window.location.search);
+            const categoryParam = urlParams.get('category');
+            if (categoryParam && ['support', 'event', 'notice'].includes(categoryParam)) {
+                currentCategory = categoryParam;
+                // 네비게이션 활성화 업데이트
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.classList.remove('active');
+                    if (item.dataset.category === categoryParam) {
+                        item.classList.add('active');
+                    }
+                });
+                updatePageTitle();
+            }
+
+            updateAuthUI();
+            loadResults();
+            setupNavigation();
+        });
+
+        // 인증 UI 업데이트
+        function updateAuthUI() {
+            const user = Auth.getCurrentUser();
+            const headerUtils = document.getElementById('headerUtils');
+
+            if (user) {
+                headerUtils.innerHTML = `
+                    <span class="user-info">${user.userName}님</span>
+                    ${user.isAdmin ? '<a href="admin.html" class="btn-admin">관리자</a>' : ''}
+                    <button class="btn-logout" onclick="logout()">로그아웃</button>
+                `;
+            } else {
+                headerUtils.innerHTML = `
+                    <a href="login.html" class="btn-login">로그인</a>
+                `;
+            }
+        }
+
+        // 로그아웃
+        function logout() {
+            Auth.logout();
+            updateAuthUI();
+            alert('로그아웃 되었습니다.');
+        }
+
+        // 네비게이션 설정
+        function setupNavigation() {
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                    currentCategory = this.dataset.category;
+                    currentPage = 1;
+                    updatePageTitle();
+                    loadResults();
+                });
+            });
+        }
+
+        // 페이지 타이틀 업데이트
+        function updatePageTitle() {
+            const titles = {
+                'support': { title: '지원사업/교육', desc: '다양한 창업 지원사업과 교육 프로그램을 검색하세요.' },
+                'event': { title: '행사/축제', desc: '창업 관련 행사와 축제 정보를 확인하세요.' },
+                'notice': { title: '공지사항', desc: '창업지원 포털의 공지사항입니다.' }
+            };
+            document.getElementById('pageTitle').textContent = titles[currentCategory].title;
+            document.getElementById('pageDesc').textContent = titles[currentCategory].desc;
+        }
+
+        // 결과 로드
+        function loadResults() {
+            const filters = collectFilters();
+            filters.category = currentCategory;
+            filters.sort = document.getElementById('sortSelect').value;
+
+            const allPosts = DataManager.searchPosts(filters);
+            const totalCount = allPosts.length;
+
+            // 페이지네이션 적용
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const posts = allPosts.slice(startIndex, startIndex + itemsPerPage);
+
+            document.getElementById('totalCount').textContent = totalCount;
+            renderResults(posts);
+            renderPagination(totalCount);
+        }
+
+        // 결과 렌더링
+        function renderResults(posts) {
+            const container = document.getElementById('resultsList');
+
+            if (posts.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-result">
+                        <p>검색 결과가 없습니다.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = posts.map(post => `
+                <div class="result-card">
+                    <div class="card-header">
+                        <span class="card-status ${post.status}">${StatusMap[post.status]}</span>
+                        <span class="card-category">${post.supportField || CategoryMap[post.category]}</span>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">
+                            <a href="detail.html?id=${post.id}">${post.title}</a>
+                        </h3>
+                        ${post.category !== 'notice' ? `
+                            <div class="card-info">
+                                <span class="info-item">
+                                    <span class="info-label">주관기관</span>
+                                    <span class="info-value">${post.organization || '-'}</span>
+                                </span>
+                                <span class="info-item">
+                                    <span class="info-label">지역</span>
+                                    <span class="info-value">${post.region || '-'}</span>
+                                </span>
+                            </div>
+                            <div class="card-date">
+                                <span class="date-label">접수기간</span>
+                                <span class="date-value">${formatDateRange(post.startDate, post.endDate)}</span>
+                            </div>
+                        ` : `
+                            <div class="card-date">
+                                <span class="date-label">등록일</span>
+                                <span class="date-value">${post.createdAt}</span>
+                            </div>
+                        `}
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn-scrap" onclick="toggleScrap(this, '${post.id}')">
+                            <span class="scrap-icon">${isScraped(post.id) ? '★' : '☆'}</span>
+                            <span>스크랩</span>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 날짜 범위 포맷
+        function formatDateRange(start, end) {
+            if (!start && !end) return '-';
+            if (!start) return `~ ${end}`;
+            if (!end) return `${start} ~`;
+            return `${start} ~ ${end}`;
+        }
+
+        // 스크랩 여부 확인
+        function isScraped(postId) {
+            const scraps = JSON.parse(localStorage.getItem('scraps') || '[]');
+            return scraps.includes(postId);
+        }
+
+        // 스크랩 토글
+        function toggleScrap(button, postId) {
+            let scraps = JSON.parse(localStorage.getItem('scraps') || '[]');
+            const index = scraps.indexOf(postId);
+
+            if (index > -1) {
+                scraps.splice(index, 1);
+                button.querySelector('.scrap-icon').textContent = '☆';
+                button.classList.remove('active');
+            } else {
+                scraps.push(postId);
+                button.querySelector('.scrap-icon').textContent = '★';
+                button.classList.add('active');
+            }
+
+            localStorage.setItem('scraps', JSON.stringify(scraps));
+        }
+
+        // 페이지네이션 렌더링
+        function renderPagination(totalCount) {
+            const totalPages = Math.ceil(totalCount / itemsPerPage);
+            const container = document.getElementById('pagination');
+
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let html = `
+                <button class="page-btn prev" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+                    <span>이전</span>
+                </button>
+                <div class="page-numbers">
+            `;
+
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, startPage + 4);
+
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button class="page-num ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            }
+
+            if (endPage < totalPages) {
+                html += `<span class="page-ellipsis">...</span>`;
+                html += `<button class="page-num" onclick="goToPage(${totalPages})">${totalPages}</button>`;
+            }
+
+            html += `
+                </div>
+                <button class="page-btn next" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+                    <span>다음</span>
+                </button>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        // 페이지 이동
+        function goToPage(page) {
+            currentPage = page;
+            loadResults();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 검색 실행
+        function performSearch() {
+            currentPage = 1;
+            loadResults();
+            updateSelectedFilters();
+        }
+
+        // 필터 적용
+        function applyFilters() {
+            currentPage = 1;
+            loadResults();
+            updateSelectedFilters();
+        }
+
+        // 정렬 변경
+        function changeSort() {
+            currentPage = 1;
+            loadResults();
+        }
+    </script>
+</body>
+</html>

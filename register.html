@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 - 창업지원 포털</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 헤더 -->
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo">
+                <a href="index.html">
+                    <span class="logo-text">창업지원 포털</span>
+                </a>
+            </div>
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="index.html?category=support" class="nav-link">지원사업/교육</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="index.html?category=event" class="nav-link">행사/축제</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="index.html?category=notice" class="nav-link">공지사항</a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="header-utils">
+                <a href="login.html" class="btn-login">로그인</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+        <div class="auth-container">
+            <div class="auth-box register-box">
+                <h1 class="auth-title">회원가입</h1>
+                <p class="auth-desc">창업지원 포털 회원이 되어주세요.</p>
+
+                <form id="registerForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="userId">아이디 <span class="required">*</span></label>
+                        <div class="input-with-btn">
+                            <input type="text" id="userId" name="userId" placeholder="영문, 숫자 4~20자" required>
+                            <button type="button" class="btn-check" onclick="checkDuplicate()">중복확인</button>
+                        </div>
+                        <span class="input-message" id="userIdMessage"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">비밀번호 <span class="required">*</span></label>
+                        <input type="password" id="password" name="password" placeholder="영문, 숫자, 특수문자 포함 8자 이상" required>
+                        <span class="input-message" id="passwordMessage"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="passwordConfirm">비밀번호 확인 <span class="required">*</span></label>
+                        <input type="password" id="passwordConfirm" name="passwordConfirm" placeholder="비밀번호를 다시 입력하세요" required>
+                        <span class="input-message" id="passwordConfirmMessage"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="userName">이름 <span class="required">*</span></label>
+                        <input type="text" id="userName" name="userName" placeholder="이름을 입력하세요" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">이메일 <span class="required">*</span></label>
+                        <input type="email" id="email" name="email" placeholder="이메일을 입력하세요" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">연락처</label>
+                        <input type="tel" id="phone" name="phone" placeholder="010-0000-0000">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label agreement">
+                            <input type="checkbox" id="agreeTerms" required>
+                            <span>[필수] 이용약관 및 개인정보처리방침에 동의합니다.</span>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn-auth-submit">회원가입</button>
+                </form>
+
+                <div class="auth-links">
+                    <span>이미 회원이신가요?</span>
+                    <a href="login.html">로그인</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-info">
+                <p class="copyright">© 2025 창업지원 포털. All rights reserved.</p>
+                <ul class="footer-links">
+                    <li><a href="#">이용약관</a></li>
+                    <li><a href="#">개인정보처리방침</a></li>
+                    <li><a href="#">사이트맵</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script src="data.js"></script>
+    <script src="auth.js"></script>
+    <script>
+        let isIdChecked = false;
+
+        // 아이디 중복 확인
+        function checkDuplicate() {
+            const userId = document.getElementById('userId').value;
+            const message = document.getElementById('userIdMessage');
+
+            if (!userId) {
+                message.textContent = '아이디를 입력해주세요.';
+                message.className = 'input-message error';
+                return;
+            }
+
+            if (userId.length < 4 || userId.length > 20) {
+                message.textContent = '아이디는 4~20자로 입력해주세요.';
+                message.className = 'input-message error';
+                return;
+            }
+
+            const result = Auth.checkDuplicate(userId);
+            if (result.available) {
+                message.textContent = '사용 가능한 아이디입니다.';
+                message.className = 'input-message success';
+                isIdChecked = true;
+            } else {
+                message.textContent = '이미 사용중인 아이디입니다.';
+                message.className = 'input-message error';
+                isIdChecked = false;
+            }
+        }
+
+        // 아이디 입력 시 중복확인 초기화
+        document.getElementById('userId').addEventListener('input', function() {
+            isIdChecked = false;
+            document.getElementById('userIdMessage').textContent = '';
+        });
+
+        // 비밀번호 확인
+        document.getElementById('passwordConfirm').addEventListener('input', function() {
+            const password = document.getElementById('password').value;
+            const passwordConfirm = this.value;
+            const message = document.getElementById('passwordConfirmMessage');
+
+            if (password === passwordConfirm) {
+                message.textContent = '비밀번호가 일치합니다.';
+                message.className = 'input-message success';
+            } else {
+                message.textContent = '비밀번호가 일치하지 않습니다.';
+                message.className = 'input-message error';
+            }
+        });
+
+        // 회원가입 폼 제출
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            if (!isIdChecked) {
+                alert('아이디 중복확인을 해주세요.');
+                return;
+            }
+
+            const password = document.getElementById('password').value;
+            const passwordConfirm = document.getElementById('passwordConfirm').value;
+
+            if (password !== passwordConfirm) {
+                alert('비밀번호가 일치하지 않습니다.');
+                return;
+            }
+
+            const userData = {
+                userId: document.getElementById('userId').value,
+                password: password,
+                userName: document.getElementById('userName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value
+            };
+
+            const result = Auth.register(userData);
+            if (result.success) {
+                alert(result.message);
+                window.location.href = 'login.html';
+            } else {
+                alert(result.message);
+            }
+        });
+    </script>
+</body>
+</html>

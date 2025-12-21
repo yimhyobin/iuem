@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>글 작성 - 창업지원 포털</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 헤더 -->
+    <header class="header admin-header">
+        <div class="header-inner">
+            <div class="logo">
+                <a href="index.html">
+                    <span class="logo-text">창업지원 포털</span>
+                </a>
+                <span class="admin-badge">관리자</span>
+            </div>
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="index.html?category=support" class="nav-link">지원사업/교육</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="index.html?category=event" class="nav-link">행사/축제</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="index.html?category=notice" class="nav-link">공지사항</a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="header-utils">
+                <span class="user-info" id="userInfo"></span>
+                <button class="btn-logout" onclick="logout()">로그아웃</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+        <div class="container">
+            <div class="post-form-container">
+                <div class="form-header">
+                    <h1 id="formTitle">새 글 작성</h1>
+                    <a href="admin.html" class="btn-back">← 목록으로</a>
+                </div>
+
+                <form id="postForm" class="post-form">
+                    <input type="hidden" id="postId" value="">
+
+                    <!-- 기본 정보 -->
+                    <div class="form-section">
+                        <h3 class="section-title">기본 정보</h3>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="category">카테고리 <span class="required">*</span></label>
+                                <select id="category" name="category" required>
+                                    <option value="">선택하세요</option>
+                                    <option value="support">지원사업/교육</option>
+                                    <option value="event">행사/축제</option>
+                                    <option value="notice">공지사항</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="status">상태 <span class="required">*</span></label>
+                                <select id="status" name="status" required>
+                                    <option value="ongoing">진행중</option>
+                                    <option value="upcoming">접수예정</option>
+                                    <option value="closed">마감</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="title">제목 <span class="required">*</span></label>
+                            <input type="text" id="title" name="title" placeholder="제목을 입력하세요" required>
+                        </div>
+                    </div>
+
+                    <!-- 상세 정보 (지원사업/교육, 행사/축제용) -->
+                    <div class="form-section" id="detailSection">
+                        <h3 class="section-title">상세 정보</h3>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="organization">주관기관</label>
+                                <input type="text" id="organization" name="organization" placeholder="주관기관을 입력하세요">
+                            </div>
+                            <div class="form-group">
+                                <label for="department">주관부처</label>
+                                <input type="text" id="department" name="department" placeholder="주관부처를 입력하세요">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="region">지역</label>
+                                <select id="region" name="region">
+                                    <option value="">선택하세요</option>
+                                    <option value="전국">전국</option>
+                                    <option value="서울">서울</option>
+                                    <option value="부산">부산</option>
+                                    <option value="대구">대구</option>
+                                    <option value="인천">인천</option>
+                                    <option value="광주">광주</option>
+                                    <option value="대전">대전</option>
+                                    <option value="울산">울산</option>
+                                    <option value="세종">세종</option>
+                                    <option value="경기">경기</option>
+                                    <option value="강원">강원</option>
+                                    <option value="충북">충북</option>
+                                    <option value="충남">충남</option>
+                                    <option value="전북">전북</option>
+                                    <option value="전남">전남</option>
+                                    <option value="경북">경북</option>
+                                    <option value="경남">경남</option>
+                                    <option value="제주">제주</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="supportField">지원분야</label>
+                                <select id="supportField" name="supportField">
+                                    <option value="">선택하세요</option>
+                                    <option value="사업화">사업화</option>
+                                    <option value="기술개발(R&D)">기술개발(R&D)</option>
+                                    <option value="시설·공간·보육">시설·공간·보육</option>
+                                    <option value="멘토링·컨설팅·교육">멘토링·컨설팅·교육</option>
+                                    <option value="글로벌">글로벌</option>
+                                    <option value="인력">인력</option>
+                                    <option value="융자·보증">융자·보증</option>
+                                    <option value="행사·네트워크">행사·네트워크</option>
+                                    <option value="창업교육">창업교육</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="target">대상</label>
+                                <select id="target" name="target">
+                                    <option value="">선택하세요</option>
+                                    <option value="청소년">청소년</option>
+                                    <option value="대학생">대학생</option>
+                                    <option value="일반인">일반인</option>
+                                    <option value="대학">대학</option>
+                                    <option value="연구기관">연구기관</option>
+                                    <option value="일반기업">일반기업</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="age">연령대</label>
+                                <select id="age" name="age">
+                                    <option value="">선택하세요</option>
+                                    <option value="만 20세 미만">만 20세 미만</option>
+                                    <option value="만 20세 ~ 29세">만 20세 ~ 29세</option>
+                                    <option value="만 30세 ~ 39세">만 30세 ~ 39세</option>
+                                    <option value="만 40세 이상">만 40세 이상</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="career">창업업력</label>
+                            <select id="career" name="career">
+                                <option value="">선택하세요</option>
+                                <option value="예비창업자">예비창업자</option>
+                                <option value="1년 미만">1년 미만</option>
+                                <option value="1년 ~ 3년 미만">1년 ~ 3년 미만</option>
+                                <option value="3년 ~ 5년 미만">3년 ~ 5년 미만</option>
+                                <option value="5년 ~ 7년 미만">5년 ~ 7년 미만</option>
+                                <option value="7년 ~ 10년 미만">7년 ~ 10년 미만</option>
+                                <option value="10년 이상">10년 이상</option>
+                            </select>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="startDate">접수 시작일</label>
+                                <input type="date" id="startDate" name="startDate">
+                            </div>
+                            <div class="form-group">
+                                <label for="endDate">접수 마감일</label>
+                                <input type="date" id="endDate" name="endDate">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 이미지 업로드 -->
+                    <div class="form-section">
+                        <h3 class="section-title">이미지</h3>
+
+                        <div class="image-upload-area">
+                            <div class="upload-box" id="uploadBox">
+                                <input type="file" id="imageInput" accept="image/*" onchange="handleImageUpload(event)">
+                                <div class="upload-placeholder">
+                                    <span class="upload-icon">📷</span>
+                                    <p>클릭하여 이미지를 업로드하세요</p>
+                                    <p class="upload-hint">JPG, PNG, GIF (최대 5MB)</p>
+                                </div>
+                            </div>
+                            <div class="image-preview" id="imagePreview">
+                                <!-- 이미지 미리보기가 표시됩니다 -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 내용 -->
+                    <div class="form-section">
+                        <h3 class="section-title">내용</h3>
+
+                        <div class="form-group">
+                            <label for="summary">요약</label>
+                            <textarea id="summary" name="summary" rows="3" placeholder="간단한 요약을 입력하세요"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="content">상세 내용</label>
+                            <textarea id="content" name="content" rows="10" placeholder="상세 내용을 입력하세요"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="link">관련 링크</label>
+                            <input type="url" id="link" name="link" placeholder="https://example.com">
+                        </div>
+                    </div>
+
+                    <!-- 버튼 -->
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="history.back()">취소</button>
+                        <button type="button" class="btn-secondary" onclick="saveTemp()">임시저장</button>
+                        <button type="submit" class="btn-primary">저장</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-info">
+                <p class="copyright">© 2025 창업지원 포털. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="data.js"></script>
+    <script src="auth.js"></script>
+    <script>
+        let uploadedImage = null;
+
+        // 페이지 로드 시
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = Auth.getCurrentUser();
+            if (!user || !user.isAdmin) {
+                alert('관리자 권한이 필요합니다.');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            document.getElementById('userInfo').textContent = user.userName + '님';
+
+            // 수정 모드인지 확인
+            const urlParams = new URLSearchParams(window.location.search);
+            const postId = urlParams.get('id');
+            if (postId) {
+                loadPost(postId);
+            }
+
+            // 카테고리 변경 시 상세정보 섹션 표시/숨김
+            document.getElementById('category').addEventListener('change', function() {
+                const detailSection = document.getElementById('detailSection');
+                if (this.value === 'notice') {
+                    detailSection.style.display = 'none';
+                } else {
+                    detailSection.style.display = 'block';
+                }
+            });
+        });
+
+        // 로그아웃
+        function logout() {
+            Auth.logout();
+            window.location.href = 'index.html';
+        }
+
+        // 게시글 불러오기 (수정 모드)
+        function loadPost(postId) {
+            const post = DataManager.getPost(postId);
+            if (!post) {
+                alert('게시글을 찾을 수 없습니다.');
+                window.location.href = 'admin.html';
+                return;
+            }
+
+            document.getElementById('formTitle').textContent = '글 수정';
+            document.getElementById('postId').value = post.id;
+            document.getElementById('category').value = post.category;
+            document.getElementById('status').value = post.status;
+            document.getElementById('title').value = post.title;
+            document.getElementById('organization').value = post.organization || '';
+            document.getElementById('department').value = post.department || '';
+            document.getElementById('region').value = post.region || '';
+            document.getElementById('supportField').value = post.supportField || '';
+            document.getElementById('target').value = post.target || '';
+            document.getElementById('age').value = post.age || '';
+            document.getElementById('career').value = post.career || '';
+            document.getElementById('startDate').value = post.startDate || '';
+            document.getElementById('endDate').value = post.endDate || '';
+            document.getElementById('summary').value = post.summary || '';
+            document.getElementById('content').value = post.content || '';
+            document.getElementById('link').value = post.link || '';
+
+            if (post.image) {
+                uploadedImage = post.image;
+                showImagePreview(post.image);
+            }
+        }
+
+        // 이미지 업로드 처리
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (file.size > 5 * 1024 * 1024) {
+                alert('파일 크기는 5MB 이하여야 합니다.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                uploadedImage = e.target.result;
+                showImagePreview(uploadedImage);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 이미지 미리보기 표시
+        function showImagePreview(imageSrc) {
+            const preview = document.getElementById('imagePreview');
+            preview.innerHTML = `
+                <div class="preview-item">
+                    <img src="${imageSrc}" alt="미리보기">
+                    <button type="button" class="btn-remove-image" onclick="removeImage()">×</button>
+                </div>
+            `;
+        }
+
+        // 이미지 제거
+        function removeImage() {
+            uploadedImage = null;
+            document.getElementById('imageInput').value = '';
+            document.getElementById('imagePreview').innerHTML = '';
+        }
+
+        // 임시저장
+        function saveTemp() {
+            const formData = collectFormData();
+            formData.isTemp = true;
+            localStorage.setItem('tempPost', JSON.stringify(formData));
+            alert('임시저장 되었습니다.');
+        }
+
+        // 폼 데이터 수집
+        function collectFormData() {
+            return {
+                id: document.getElementById('postId').value || null,
+                category: document.getElementById('category').value,
+                status: document.getElementById('status').value,
+                title: document.getElementById('title').value,
+                organization: document.getElementById('organization').value,
+                department: document.getElementById('department').value,
+                region: document.getElementById('region').value,
+                supportField: document.getElementById('supportField').value,
+                target: document.getElementById('target').value,
+                age: document.getElementById('age').value,
+                career: document.getElementById('career').value,
+                startDate: document.getElementById('startDate').value,
+                endDate: document.getElementById('endDate').value,
+                summary: document.getElementById('summary').value,
+                content: document.getElementById('content').value,
+                link: document.getElementById('link').value,
+                image: uploadedImage
+            };
+        }
+
+        // 폼 제출
+        document.getElementById('postForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = collectFormData();
+
+            let result;
+            if (formData.id) {
+                result = DataManager.updatePost(formData.id, formData);
+            } else {
+                result = DataManager.addPost(formData);
+            }
+
+            if (result.success) {
+                alert(result.message);
+                window.location.href = 'admin.html';
+            } else {
+                alert(result.message);
+            }
+        });
+    </script>
+</body>
+</html>
