@@ -190,16 +190,30 @@
     <script src="auth.js"></script>
     <script src="admin.js"></script>
     <script>
-        // 페이지 로드 시 관리자 권한 확인
-        document.addEventListener('DOMContentLoaded', function() {
-            const user = Auth.getCurrentUser();
-            if (!user || !user.isAdmin) {
-                alert('관리자 권한이 필요합니다.');
+        // Firebase 인증 상태 확인 후 관리자 권한 체크
+        auth.onAuthStateChanged(async function(user) {
+            if (!user) {
+                alert('로그인이 필요합니다.');
                 window.location.href = 'login.html';
                 return;
             }
 
-            document.getElementById('userInfo').textContent = user.userName + '님';
+            // Firestore에서 사용자 정보 가져오기
+            const userDoc = await db.collection('iuem').doc(user.uid).get();
+            if (!userDoc.exists || !userDoc.data().isAdmin) {
+                alert('관리자 권한이 필요합니다.');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            Auth.currentUser = {
+                uid: user.uid,
+                email: user.email,
+                userName: userDoc.data().userName,
+                isAdmin: userDoc.data().isAdmin
+            };
+
+            document.getElementById('userInfo').textContent = userDoc.data().userName + '님';
             loadPosts();
             loadUsers();
         });
