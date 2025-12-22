@@ -51,14 +51,33 @@ async function fetchAnnouncements(page = 1, perPage = 100) {
 }
 
 /**
+ * YYYYMMDD 형식을 Date 객체로 변환
+ */
+function parseDate(dateStr) {
+    if (!dateStr || dateStr.length !== 8) return null;
+    const year = parseInt(dateStr.substring(0, 4));
+    const month = parseInt(dateStr.substring(4, 6)) - 1; // 월은 0부터 시작
+    const day = parseInt(dateStr.substring(6, 8));
+    return new Date(year, month, day);
+}
+
+/**
+ * YYYYMMDD를 YYYY-MM-DD 형식으로 변환
+ */
+function formatDate(dateStr) {
+    if (!dateStr || dateStr.length !== 8) return '';
+    return `${dateStr.substring(0, 4)}-${dateStr.substring(4, 6)}-${dateStr.substring(6, 8)}`;
+}
+
+/**
  * 상태 계산 (ongoing, upcoming, closed)
  */
 function calculateStatus(startDate, endDate) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const start = startDate ? new Date(startDate) : null;
-    const end = endDate ? new Date(endDate) : null;
+    const start = parseDate(startDate);
+    const end = parseDate(endDate);
 
     if (end && end < today) {
         return 'closed';
@@ -115,20 +134,20 @@ function mapCategory(suptBizClsfc) {
  * API 데이터를 Firestore 형식으로 변환
  */
 function transformData(item) {
-    // API 필드명 매핑
-    const startDate = item.pbanc_rcpt_bgng_dt || '';
-    const endDate = item.pbanc_rcpt_end_dt || '';
+    // API 필드명 매핑 (YYYYMMDD 형식)
+    const startDateRaw = item.pbanc_rcpt_bgng_dt || '';
+    const endDateRaw = item.pbanc_rcpt_end_dt || '';
     const supportField = item.supt_biz_clsfc || '사업화';
 
     return {
         title: item.biz_pbanc_nm || item.intg_pbanc_biz_nm || '제목 없음',
         category: mapCategory(supportField),
-        status: calculateStatus(startDate, endDate),
+        status: calculateStatus(startDateRaw, endDateRaw),
         organization: item.sprv_inst || '',
         region: item.supt_regin || '전국',
         supportField: supportField,
-        startDate: startDate,
-        endDate: endDate,
+        startDate: formatDate(startDateRaw),  // YYYY-MM-DD 형식으로 변환
+        endDate: formatDate(endDateRaw),      // YYYY-MM-DD 형식으로 변환
         description: item.pbanc_ctnt || '',
         targetAudience: item.aply_trgt || '',
         applicationUrl: item.detl_pg_url || item.biz_aply_url || '',
