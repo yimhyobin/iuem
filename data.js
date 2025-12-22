@@ -131,8 +131,16 @@ const DataManager = {
 
     getAllPosts: async function() {
         try {
-            const snapshot = await db.collection('iuem').orderBy('createdAt', 'desc').get();
-            return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            // orderBy 없이 가져온 후 클라이언트에서 정렬 (인덱스 불필요)
+            const snapshot = await db.collection('iuem').get();
+            const posts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            // 클라이언트에서 정렬
+            posts.sort((a, b) => {
+                const dateA = new Date(b.createdAt || '1970-01-01');
+                const dateB = new Date(a.createdAt || '1970-01-01');
+                return dateA - dateB;
+            });
+            return posts;
         } catch (error) {
             console.error('게시글 조회 오류:', error);
             return [];
@@ -145,8 +153,15 @@ const DataManager = {
             if (category !== 'all') {
                 query = query.where('category', '==', category);
             }
-            const snapshot = await query.orderBy('createdAt', 'desc').get();
-            return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            const snapshot = await query.get();
+            const posts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            // 클라이언트에서 정렬
+            posts.sort((a, b) => {
+                const dateA = new Date(b.createdAt || '1970-01-01');
+                const dateB = new Date(a.createdAt || '1970-01-01');
+                return dateA - dateB;
+            });
+            return posts;
         } catch (error) {
             console.error('카테고리별 조회 오류:', error);
             return [];
