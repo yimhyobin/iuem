@@ -114,11 +114,11 @@ const DataManager = {
 
     init: async function() {
         try {
-            const snapshot = await db.collection('posts').limit(1).get();
+            const snapshot = await db.collection('iuem').limit(1).get();
             if (snapshot.empty) {
                 const batch = db.batch();
                 this.samplePosts.forEach(post => {
-                    const docRef = db.collection('posts').doc(post.id);
+                    const docRef = db.collection('iuem').doc(post.id);
                     batch.set(docRef, post);
                 });
                 await batch.commit();
@@ -131,7 +131,7 @@ const DataManager = {
 
     getAllPosts: async function() {
         try {
-            const snapshot = await db.collection('posts').orderBy('createdAt', 'desc').get();
+            const snapshot = await db.collection('iuem').orderBy('createdAt', 'desc').get();
             return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         } catch (error) {
             console.error('게시글 조회 오류:', error);
@@ -141,7 +141,7 @@ const DataManager = {
 
     getPostsByCategory: async function(category) {
         try {
-            let query = db.collection('posts');
+            let query = db.collection('iuem');
             if (category !== 'all') {
                 query = query.where('category', '==', category);
             }
@@ -155,7 +155,7 @@ const DataManager = {
 
     getPost: async function(id) {
         try {
-            const doc = await db.collection('posts').doc(id).get();
+            const doc = await db.collection('iuem').doc(id).get();
             if (doc.exists) {
                 return { id: doc.id, ...doc.data() };
             }
@@ -173,7 +173,7 @@ const DataManager = {
                 createdAt: new Date().toISOString().split('T')[0],
                 updatedAt: new Date().toISOString().split('T')[0]
             };
-            const docRef = await db.collection('posts').add(newPost);
+            const docRef = await db.collection('iuem').add(newPost);
             return { success: true, message: '게시글이 등록되었습니다.', post: { id: docRef.id, ...newPost } };
         } catch (error) {
             console.error('게시글 등록 오류:', error);
@@ -183,7 +183,7 @@ const DataManager = {
 
     updatePost: async function(id, postData) {
         try {
-            await db.collection('posts').doc(id).update({
+            await db.collection('iuem').doc(id).update({
                 ...postData,
                 updatedAt: new Date().toISOString().split('T')[0]
             });
@@ -196,7 +196,7 @@ const DataManager = {
 
     deletePost: async function(id) {
         try {
-            await db.collection('posts').doc(id).delete();
+            await db.collection('iuem').doc(id).delete();
             return { success: true, message: '게시글이 삭제되었습니다.' };
         } catch (error) {
             console.error('게시글 삭제 오류:', error);
@@ -208,7 +208,7 @@ const DataManager = {
         try {
             const batch = db.batch();
             ids.forEach(id => {
-                const docRef = db.collection('posts').doc(id);
+                const docRef = db.collection('iuem').doc(id);
                 batch.delete(docRef);
             });
             await batch.commit();
