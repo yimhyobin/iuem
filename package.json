@@ -1,0 +1,13 @@
+{
+  "name": "iuem-kstartup-fetcher",
+  "version": "1.0.0",
+  "description": "K-Startup API 데이터 가져오기",
+  "main": "fetch-api.js",
+  "scripts": {
+    "fetch": "node fetch-api.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "firebase-admin": "^12.0.0"
+  }
+}

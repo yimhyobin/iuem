@@ -38,6 +38,13 @@
     <!-- 메인 콘텐츠 -->
     <main class="main-content">
         <div class="container">
+            <!-- 브레드크럼 -->
+            <nav class="breadcrumb">
+                <a href="index.html">홈</a>
+                <span class="separator">></span>
+                <span class="current" id="breadcrumbCurrent">지원사업/교육</span>
+            </nav>
+
             <!-- 페이지 타이틀 -->
             <div class="page-title">
                 <h1 id="pageTitle">지원사업/교육</h1>
@@ -421,6 +428,27 @@
             };
             document.getElementById('pageTitle').textContent = titles[currentCategory].title;
             document.getElementById('pageDesc').textContent = titles[currentCategory].desc;
+            document.getElementById('breadcrumbCurrent').textContent = titles[currentCategory].title;
+        }
+
+        // D-day 계산
+        function calculateDday(endDate) {
+            if (!endDate) return null;
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const end = new Date(endDate);
+            end.setHours(0, 0, 0, 0);
+            const diff = Math.ceil((end - today) / (1000 * 60 * 60 * 24));
+            return diff;
+        }
+
+        // D-day 표시 텍스트
+        function getDdayText(dday, status) {
+            if (status === 'closed') return '마감';
+            if (status === 'upcoming') return '예정';
+            if (dday === 0) return 'D-Day';
+            if (dday > 0) return `D-${dday}`;
+            return '마감';
         }
 
         // 결과 로드
@@ -454,13 +482,24 @@
                 return;
             }
 
-            container.innerHTML = posts.map(post => `
+            container.innerHTML = posts.map(post => {
+                const dday = calculateDday(post.endDate);
+                const ddayText = getDdayText(dday, post.status);
+
+                return `
                 <div class="result-card">
-                    <div class="card-header">
-                        <span class="card-status ${post.status}">${StatusMap[post.status]}</span>
-                        <span class="card-category">${post.supportField || CategoryMap[post.category]}</span>
+                    ${post.category !== 'notice' ? `
+                    <div class="card-dday">
+                        <div class="dday-badge ${post.status}">
+                            <span>${ddayText}</span>
+                        </div>
                     </div>
+                    ` : ''}
                     <div class="card-body">
+                        <div class="card-header">
+                            <span class="card-status ${post.status}">${StatusMap[post.status]}</span>
+                            <span class="card-category">${post.supportField || CategoryMap[post.category]}</span>
+                        </div>
                         <h3 class="card-title">
                             <a href="detail.html?id=${post.id}">${post.title}</a>
                         </h3>
@@ -487,13 +526,13 @@
                         `}
                     </div>
                     <div class="card-footer">
-                        <button class="btn-scrap" onclick="toggleScrap(this, '${post.id}')">
+                        <button class="btn-scrap ${isScraped(post.id) ? 'active' : ''}" onclick="toggleScrap(this, '${post.id}')">
                             <span class="scrap-icon">${isScraped(post.id) ? '★' : '☆'}</span>
                             <span>스크랩</span>
                         </button>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         // 날짜 범위 포맷
