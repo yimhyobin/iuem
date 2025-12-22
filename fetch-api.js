@@ -70,25 +70,68 @@ function calculateStatus(startDate, endDate) {
 }
 
 /**
+ * API 지원분야를 네비게이션 카테고리로 매핑
+ * - support (지원사업/교육): 사업화, R&D, 멘토링, 시설, 인력, 융자 등
+ * - event (행사/축제): 행사, 네트워크
+ * - notice (공지사항): 기타
+ */
+function mapCategory(suptBizClsfc) {
+    if (!suptBizClsfc) return 'support';
+
+    const category = suptBizClsfc.toLowerCase();
+
+    // 행사/축제 카테고리
+    if (category.includes('행사') ||
+        category.includes('네트워크') ||
+        category.includes('축제') ||
+        category.includes('박람회') ||
+        category.includes('컨퍼런스') ||
+        category.includes('데모데이')) {
+        return 'event';
+    }
+
+    // 지원사업/교육 카테고리 (대부분)
+    if (category.includes('사업화') ||
+        category.includes('r&d') ||
+        category.includes('기술개발') ||
+        category.includes('멘토링') ||
+        category.includes('컨설팅') ||
+        category.includes('교육') ||
+        category.includes('시설') ||
+        category.includes('공간') ||
+        category.includes('보육') ||
+        category.includes('인력') ||
+        category.includes('융자') ||
+        category.includes('글로벌') ||
+        category.includes('투자')) {
+        return 'support';
+    }
+
+    // 기본값: 지원사업
+    return 'support';
+}
+
+/**
  * API 데이터를 Firestore 형식으로 변환
  */
 function transformData(item) {
-    // API 응답 필드명은 실제 응답에 맞게 수정 필요
-    const startDate = item.rcptBgngDt || item.startDate || '';
-    const endDate = item.rcptEndDt || item.endDate || '';
+    // API 필드명 매핑
+    const startDate = item.pbanc_rcpt_bgng_dt || '';
+    const endDate = item.pbanc_rcpt_end_dt || '';
+    const supportField = item.supt_biz_clsfc || '사업화';
 
     return {
-        title: item.pbancTtl || item.title || '제목 없음',
-        category: 'support',
+        title: item.biz_pbanc_nm || item.intg_pbanc_biz_nm || '제목 없음',
+        category: mapCategory(supportField),
         status: calculateStatus(startDate, endDate),
-        organization: item.excInsttNm || item.organization || '',
-        region: item.rgnNm || item.region || '전국',
-        supportField: item.sprtFldNm || item.supportField || '사업화',
+        organization: item.sprv_inst || '',
+        region: item.supt_regin || '전국',
+        supportField: supportField,
         startDate: startDate,
         endDate: endDate,
-        description: item.pbancCn || item.description || '',
-        targetAudience: item.trgtJgdnNm || '',
-        applicationUrl: item.linkUrl || item.pbancUrl || '',
+        description: item.pbanc_ctnt || '',
+        targetAudience: item.aply_trgt || '',
+        applicationUrl: item.detl_pg_url || item.biz_aply_url || '',
         views: 0,
         createdAt: new Date().toISOString().split('T')[0],
         updatedAt: new Date().toISOString(),
@@ -105,9 +148,11 @@ async function saveToFirestore(posts) {
     const batch = db.batch();
     const collectionRef = db.collection('iuem');
 
-    for (const post of posts) {
-        // 제목 기반으로 고유 ID 생성 (중복 방지)
-        const docId = `kstartup_${Buffer.from(post.title).toString('base64').slice(0, 20)}`;
+    for (let i = 0; i < posts.length; i++) {
+        const post = posts[i];
+        // 안전한 문서 ID 생성 (특수문자 제거)
+        const safeTitle = post.title.replace(/[^a-zA-Z0-9가-힣]/g, '').slice(0, 30);
+        const docId = `kstartup_${i}_${safeTitle}`;
         const docRef = collectionRef.doc(docId);
         batch.set(docRef, post, { merge: true });
     }
