@@ -145,19 +145,27 @@ function transformData(item) {
 async function saveToFirestore(posts) {
     console.log(`💾 Firestore에 ${posts.length}개 데이터 저장 중...`);
 
-    const batch = db.batch();
     const collectionRef = db.collection('iuem');
+    const batchSize = 400; // Firestore 제한은 500이지만 안전하게 400으로
 
-    for (let i = 0; i < posts.length; i++) {
-        const post = posts[i];
-        // 안전한 문서 ID 생성 (특수문자 제거)
-        const safeTitle = post.title.replace(/[^a-zA-Z0-9가-힣]/g, '').slice(0, 30);
-        const docId = `kstartup_${i}_${safeTitle}`;
-        const docRef = collectionRef.doc(docId);
-        batch.set(docRef, post, { merge: true });
+    // 배치 단위로 나눠서 저장
+    for (let i = 0; i < posts.length; i += batchSize) {
+        const batch = db.batch();
+        const chunk = posts.slice(i, i + batchSize);
+
+        for (let j = 0; j < chunk.length; j++) {
+            const post = chunk[j];
+            // 안전한 문서 ID 생성 (특수문자 제거)
+            const safeTitle = post.title.replace(/[^a-zA-Z0-9가-힣]/g, '').slice(0, 30);
+            const docId = `kstartup_${i + j}_${safeTitle}`;
+            const docRef = collectionRef.doc(docId);
+            batch.set(docRef, post, { merge: true });
+        }
+
+        await batch.commit();
+        console.log(`   배치 ${Math.floor(i / batchSize) + 1} 저장 완료 (${chunk.length}개)`);
     }
 
-    await batch.commit();
     console.log('✅ Firestore 저장 완료!');
 }
 
@@ -174,21 +182,49 @@ async function main() {
     }
 
     try {
-        // 1. API에서 데이터 가져오기
-        const response = await fetchAnnouncements(1, 100);
+        let allPosts = [];
+        let page = 1;
+        const perPage = 100;
+        const maxPages = 10; // 최대 10페이지 (1000개)
 
-        if (!response.data || response.data.length === 0) {
-            console.log('⚠️ 가져올 데이터가 없습니다.');
+        // 여러 페이지에서 데이터 가져오기
+        while (page <= maxPages) {
+            const response = await fetchAnnouncements(page, perPage);
+
+            if (!response.data || response.data.length === 0) {
+                break;
+            }
+
+            if (page === 1) {
+                console.log(`📊 총 ${response.matchCount || response.totalCount}개 공고 발견\n`);
+            }
+
+            // 데이터 변환
+            const posts = response.data.map(transformData);
+
+            // 마감되지 않은 것만 필터링 (ongoing, upcoming)
+            const activePosts = posts.filter(post => post.status !== 'closed');
+
+            allPosts = allPosts.concat(activePosts);
+            console.log(`   페이지 ${page}: ${activePosts.length}개 활성 공고 추가 (총 ${allPosts.length}개)`);
+
+            // 다음 페이지 없으면 종료
+            if (response.data.length < perPage) {
+                break;
+            }
+
+            page++;
+        }
+
+        if (allPosts.length === 0) {
+            console.log('⚠️ 활성 공고가 없습니다.');
             return;
         }
 
-        console.log(`📊 총 ${response.matchCount || response.data.length}개 공고 발견\n`);
+        console.log(`\n📋 마감되지 않은 공고: ${allPosts.length}개\n`);
 
-        // 2. 데이터 변환
-        const posts = response.data.map(transformData);
-
-        // 3. Firestore에 저장
-        await saveToFirestore(posts);
+        // Firestore에 저장
+        await saveToFirestore(allPosts);
 
         console.log('\n🎉 완료! 웹사이트를 새로고침하면 데이터가 표시됩니다.');
 
