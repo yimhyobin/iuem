@@ -5,9 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>상세보기 - 창업지원 포털</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7393735448519226" crossorigin="anonymous"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="firebase-config.js"></script>
     <script src="data.js"></script>
     <style>
@@ -173,6 +175,19 @@
             padding: 60px;
             color: #d32f2f;
         }
+        .detail-notice {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 6px;
+            padding: 15px 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .detail-notice p {
+            margin: 0;
+            color: #856404;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -222,17 +237,7 @@
     </footer>
 
     <script>
-        const StatusMap = {
-            'ongoing': '진행중',
-            'upcoming': '접수예정',
-            'closed': '마감'
-        };
 
-        const CategoryMap = {
-            'support': '지원사업/교육',
-            'event': '행사/축제',
-            'notice': '공지사항'
-        };
 
         // URL에서 ID 가져오기
         const urlParams = new URLSearchParams(window.location.search);
@@ -354,10 +359,16 @@
                     </div>
                 </div>
 
+                ${post.applicationUrl ? `
+                <div class="detail-notice">
+                    <p>* 첨부파일 및 상세 내용은 원본 페이지에서 확인하세요.</p>
+                </div>
+                ` : ''}
+
                 <div class="detail-actions">
                     ${post.applicationUrl ? `
                     <a href="${post.applicationUrl}" target="_blank" class="btn-action btn-primary">
-                        신청하기 →
+                        원본 페이지 보기
                     </a>
                     ` : ''}
                     <a href="javascript:history.back()" class="btn-action btn-secondary">
