@@ -248,7 +248,38 @@ const DataManager = {
             }
 
             if (filters.category && filters.category !== 'all') {
-                posts = posts.filter(post => post.category === filters.category);
+                switch (filters.category) {
+                    case 'support':
+                        // 지원사업: category='support' AND 교육 분야 제외
+                        posts = posts.filter(post =>
+                            post.category === 'support' &&
+                            !EducationFields.includes(post.supportField)
+                        );
+                        break;
+                    case 'education':
+                        // 교육: category='support' AND 교육 분야
+                        posts = posts.filter(post =>
+                            post.category === 'support' &&
+                            EducationFields.includes(post.supportField)
+                        );
+                        break;
+                    case 'seminar':
+                        // 행사/세미나: category='event' AND TourAPI 아닌 것
+                        posts = posts.filter(post =>
+                            post.category === 'event' &&
+                            post.source !== 'tour-api'
+                        );
+                        break;
+                    case 'festival':
+                        // 축제: category='event' AND TourAPI 데이터
+                        posts = posts.filter(post =>
+                            post.category === 'event' &&
+                            post.source === 'tour-api'
+                        );
+                        break;
+                    default:
+                        posts = posts.filter(post => post.category === filters.category);
+                }
             }
 
             if (filters.regions && filters.regions.length > 0) {
@@ -294,10 +325,16 @@ const DataManager = {
 };
 
 const CategoryMap = {
-    'support': '지원사업/교육',
-    'event': '행사/축제',
+    'support': '지원사업',
+    'education': '교육',
+    'seminar': '행사/세미나',
+    'festival': '축제',
+    'event': '행사/축제',  // 하위호환
     'notice': '공지사항'
 };
+
+// 교육 관련 지원분야
+const EducationFields = ['멘토링·컨설팅·교육', '창업교육'];
 
 const StatusMap = {
     'ongoing': '진행중',

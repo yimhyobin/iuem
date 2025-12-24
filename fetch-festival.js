@@ -26,6 +26,7 @@ const db = admin.firestore();
 const API_KEY = process.env.FESTIVAL_API_KEY;
 // TourAPI 4.0 (KorService2)
 const API_URL = 'https://apis.data.go.kr/B551011/KorService2/searchFestival2';
+const IMAGE_API_URL = 'https://apis.data.go.kr/B551011/KorService2/detailImage2';
 
 /**
  * API에서 축제 데이터 가져오기
@@ -57,6 +58,27 @@ async function fetchFestivals(page = 1, numOfRows = 100) {
     } catch (error) {
         console.error('❌ API 호출 실패:', error.message);
         throw error;
+    }
+}
+
+/**
+ * 축제 상세 이미지 가져오기
+ */
+async function fetchFestivalImages(contentId) {
+    const url = `${IMAGE_API_URL}?serviceKey=${API_KEY}&contentId=${contentId}&MobileOS=ETC&MobileApp=iuem&_type=json&imageYN=Y&subImageYN=Y`;
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        const items = data?.response?.body?.items?.item || [];
+        const itemArray = Array.isArray(items) ? items : (items ? [items] : []);
+
+        // 이미지 URL 배열 반환 (originimgurl 사용, 없으면 smallimageurl)
+        return itemArray.map(item => item.originimgurl || item.smallimageurl).filter(Boolean);
+    } catch (error) {
+        console.log(`   이미지 조회 실패 (contentId: ${contentId}):`, error.message);
+        return [];
     }
 }
 
@@ -97,13 +119,20 @@ function calculateStatus(startDate, endDate) {
  * API 데이터를 Firestore 형식으로 변환
  * TourAPI 4.0 응답 형식에 맞춤
  */
-function transformFestivalData(item) {
+function transformFestivalData(item, additionalImages = []) {
     const startDate = formatDate(item.eventstartdate || '');
     const endDate = formatDate(item.eventenddate || '');
 
     // 주소에서 지역 추출
     const addr = item.addr1 || '';
     const region = addr.split(' ')[0] || '전국';
+
+    // 대표 이미지
+    const mainImage = item.firstimage || item.firstimage2 || '';
+
+    // 모든 이미지 배열 (대표 이미지 + 추가 이미지, 중복 제거)
+    const allImages = [mainImage, ...additionalImages].filter(Boolean);
+    const uniqueImages = [...new Set(allImages)];
 
     return {
         title: item.title || '축제명 없음',
@@ -118,7 +147,8 @@ function transformFestivalData(item) {
         targetAudience: '',
         applicationUrl: '',
         phoneNumber: item.tel || '',
-        image: item.firstimage || item.firstimage2 || '',
+        image: mainImage,
+        images: uniqueImages,  // 홍보 이미지 배열
         contentId: item.contentid || '',
         views: 0,
         createdAt: new Date().toISOString().split('T')[0],
@@ -194,8 +224,22 @@ async function main() {
                 console.log(`📊 총 ${totalCount}개 축제/행사 발견\n`);
             }
 
-            // 데이터 변환
-            const festivals = itemArray.map(transformFestivalData);
+            // 데이터 변환 (이미지 가져오기 포함)
+            console.log(`   📷 ${itemArray.length}개 축제의 홍보 이미지 가져오는 중...`);
+            const festivals = [];
+            for (const item of itemArray) {
+                const contentId = item.contentid;
+                let additionalImages = [];
+
+                if (contentId) {
+                    additionalImages = await fetchFestivalImages(contentId);
+                    // API 호출 간격
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+
+                const festival = transformFestivalData(item, additionalImages);
+                festivals.push(festival);
+            }
 
             // 마감되지 않은 것만 필터링
             const activeFestivals = festivals.filter(f => f.status !== 'closed');

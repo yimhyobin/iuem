@@ -119,6 +119,120 @@
             border-radius: 8px;
             margin-bottom: 20px;
         }
+        /* 이미지 갤러리 스타일 */
+        .image-gallery {
+            margin-bottom: 25px;
+        }
+        .gallery-main {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f5f5f5;
+            margin-bottom: 10px;
+        }
+        .gallery-main img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+        .gallery-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .gallery-nav:hover {
+            background: rgba(0,0,0,0.7);
+        }
+        .gallery-nav.prev { left: 10px; }
+        .gallery-nav.next { right: 10px; }
+        .gallery-counter {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 13px;
+        }
+        .gallery-thumbs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 5px 0;
+        }
+        .gallery-thumb {
+            flex-shrink: 0;
+            width: 80px;
+            height: 60px;
+            border-radius: 6px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color 0.2s, opacity 0.2s;
+            opacity: 0.7;
+        }
+        .gallery-thumb:hover {
+            opacity: 1;
+        }
+        .gallery-thumb.active {
+            border-color: #1a3a6e;
+            opacity: 1;
+        }
+        .gallery-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        /* 이미지 모달 (확대 보기) */
+        .image-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .image-modal.show {
+            display: flex;
+        }
+        .image-modal img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+        .image-modal .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 35px;
+            cursor: pointer;
+        }
+        .image-modal .gallery-nav {
+            position: absolute;
+            top: 50%;
+        }
         .detail-actions {
             display: flex;
             gap: 10px;
@@ -202,10 +316,16 @@
             <nav class="nav">
                 <ul class="nav-list">
                     <li class="nav-item" data-category="support">
-                        <a href="index.html?category=support" class="nav-link">지원사업/교육</a>
+                        <a href="index.html?category=support" class="nav-link">지원사업</a>
                     </li>
-                    <li class="nav-item" data-category="event">
-                        <a href="index.html?category=event" class="nav-link">행사/축제</a>
+                    <li class="nav-item" data-category="education">
+                        <a href="index.html?category=education" class="nav-link">교육</a>
+                    </li>
+                    <li class="nav-item" data-category="seminar">
+                        <a href="index.html?category=seminar" class="nav-link">행사/세미나</a>
+                    </li>
+                    <li class="nav-item" data-category="festival">
+                        <a href="index.html?category=festival" class="nav-link">축제</a>
                     </li>
                     <li class="nav-item" data-category="notice">
                         <a href="index.html?category=notice" class="nav-link">공지사항</a>
@@ -229,6 +349,14 @@
         </div>
     </main>
 
+    <!-- 이미지 모달 -->
+    <div class="image-modal" id="imageModal">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <button class="gallery-nav prev" onclick="changeModalImage(-1)">&#10094;</button>
+        <img id="modalImage" src="" alt="확대 이미지">
+        <button class="gallery-nav next" onclick="changeModalImage(1)">&#10095;</button>
+    </div>
+
     <!-- 푸터 -->
     <footer class="footer">
         <div class="footer-inner">
@@ -237,6 +365,9 @@
     </footer>
 
     <script>
+        // 갤러리 상태
+        let currentImages = [];
+        let currentIndex = 0;
 
 
         // URL에서 ID 가져오기
@@ -267,11 +398,110 @@
             }
         }
 
+        // 이미지 갤러리 HTML 생성
+        function createGalleryHtml(images, title) {
+            if (!images || images.length === 0) return '';
+
+            // 이미지가 1장이면 기존 방식
+            if (images.length === 1) {
+                return `<img src="${images[0]}" alt="${title}" class="detail-image" onclick="openModal(0)">`;
+            }
+
+            // 여러 이미지면 갤러리
+            const thumbsHtml = images.map((img, idx) =>
+                `<div class="gallery-thumb ${idx === 0 ? 'active' : ''}" onclick="changeImage(${idx})">
+                    <img src="${img}" alt="${title} ${idx + 1}">
+                </div>`
+            ).join('');
+
+            return `
+                <div class="image-gallery">
+                    <div class="gallery-main">
+                        <img id="galleryMainImage" src="${images[0]}" alt="${title}" onclick="openModal(currentIndex)">
+                        <button class="gallery-nav prev" onclick="changeImage(currentIndex - 1)">&#10094;</button>
+                        <button class="gallery-nav next" onclick="changeImage(currentIndex + 1)">&#10095;</button>
+                        <div class="gallery-counter"><span id="imageCounter">1</span> / ${images.length}</div>
+                    </div>
+                    <div class="gallery-thumbs">${thumbsHtml}</div>
+                </div>
+            `;
+        }
+
+        // 갤러리 이미지 변경
+        function changeImage(index) {
+            if (currentImages.length === 0) return;
+
+            // 순환 처리
+            if (index < 0) index = currentImages.length - 1;
+            if (index >= currentImages.length) index = 0;
+
+            currentIndex = index;
+
+            const mainImg = document.getElementById('galleryMainImage');
+            const counter = document.getElementById('imageCounter');
+            const thumbs = document.querySelectorAll('.gallery-thumb');
+
+            if (mainImg) mainImg.src = currentImages[index];
+            if (counter) counter.textContent = index + 1;
+
+            thumbs.forEach((thumb, i) => {
+                thumb.classList.toggle('active', i === index);
+            });
+        }
+
+        // 모달 열기
+        function openModal(index) {
+            if (currentImages.length === 0) return;
+            currentIndex = index;
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            modalImg.src = currentImages[index];
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 모달 닫기
+        function closeModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // 모달 이미지 변경
+        function changeModalImage(direction) {
+            let newIndex = currentIndex + direction;
+            if (newIndex < 0) newIndex = currentImages.length - 1;
+            if (newIndex >= currentImages.length) newIndex = 0;
+            currentIndex = newIndex;
+            document.getElementById('modalImage').src = currentImages[newIndex];
+        }
+
+        // 키보드 이벤트
+        document.addEventListener('keydown', function(e) {
+            const modal = document.getElementById('imageModal');
+            if (!modal.classList.contains('show')) return;
+
+            if (e.key === 'Escape') closeModal();
+            if (e.key === 'ArrowLeft') changeModalImage(-1);
+            if (e.key === 'ArrowRight') changeModalImage(1);
+        });
+
+        // 모달 배경 클릭시 닫기
+        document.getElementById('imageModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
         // 상세 렌더링
         function renderDetail(post) {
             const container = document.getElementById('detailContent');
 
-            const imageHtml = post.image ? `<img src="${post.image}" alt="${post.title}" class="detail-image">` : '';
+            // 이미지 배열 설정 (images 배열이 있으면 사용, 없으면 image 단일값 사용)
+            currentImages = post.images && post.images.length > 0
+                ? post.images
+                : (post.image ? [post.image] : []);
+            currentIndex = 0;
+
+            const galleryHtml = createGalleryHtml(currentImages, post.title);
 
             container.innerHTML = `
                 <div class="detail-header">
@@ -299,7 +529,7 @@
                 </div>
 
                 <div class="detail-body">
-                    ${imageHtml}
+                    ${galleryHtml}
 
                     ${post.startDate || post.endDate ? `
                     <div class="detail-section">
