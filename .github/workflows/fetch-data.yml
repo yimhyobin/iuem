@@ -1,0 +1,52 @@
+name: 자동 데이터 수집
+
+# 실행 스케줄: 매일 오전 9시 (한국시간)
+on:
+  schedule:
+    - cron: '0 0 * * *'  # UTC 00:00 = KST 09:00
+  workflow_dispatch:  # 수동 실행도 가능
+
+jobs:
+  fetch-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 코드 체크아웃
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Node.js 설정
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 3. 의존성 설치
+      - name: Install dependencies
+        run: npm install
+
+      # 4. 환경변수 및 Firebase 인증 설정
+      - name: Setup credentials
+        run: |
+          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > serviceAccountKey.json
+          echo "KSTARTUP_API_KEY=${{ secrets.KSTARTUP_API_KEY }}" >> .env
+          echo "FESTIVAL_API_KEY=${{ secrets.FESTIVAL_API_KEY }}" >> .env
+
+      # 5. K-Startup API 데이터 수집
+      - name: Fetch K-Startup data
+        run: node fetch-api.js
+        continue-on-error: true
+
+      # 6. 축제 데이터 수집
+      - name: Fetch Festival data
+        run: node fetch-festival.js
+        continue-on-error: true
+
+      # 7. 천안시 데이터 수집
+      - name: Fetch Cheonan data
+        run: node fetch-cheonan.js
+        continue-on-error: true
+
+      # 8. 완료 로그
+      - name: Complete
+        run: echo "✅ 데이터 수집 완료! $(date)"

@@ -1,0 +1,313 @@
+{
+  "서울특별시": {
+    "광역": "http://www.seoul.go.kr/",
+    "기초": {
+      "종로구": "http://www.jongno.go.kr/",
+      "중구": "http://www.junggu.seoul.kr/",
+      "용산구": "http://www.yongsan.go.kr/",
+      "성동구": "http://www.sd.go.kr/",
+      "광진구": "https://www.gwangjin.go.kr/",
+      "동대문구": "http://www.ddm.go.kr/",
+      "중랑구": "http://www.jungnang.go.kr/",
+      "성북구": "http://www.sb.go.kr/",
+      "강북구": "http://www.gangbuk.go.kr/",
+      "도봉구": "http://www.dobong.go.kr/",
+      "노원구": "http://www.nowon.kr/",
+      "은평구": "http://www.ep.go.kr/",
+      "서대문구": "http://www.sdm.go.kr/",
+      "마포구": "https://www.mapo.go.kr/",
+      "양천구": "http://www.yangcheon.go.kr/",
+      "강서구": "http://www.gangseo.seoul.kr/",
+      "구로구": "http://www.guro.go.kr/",
+      "금천구": "http://www.geumcheon.go.kr/",
+      "영등포구": "http://www.ydp.go.kr/",
+      "동작구": "http://www.dongjak.go.kr/",
+      "관악구": "http://www.gwanak.go.kr/",
+      "서초구": "http://www.seocho.go.kr/",
+      "강남구": "http://www.gangnam.go.kr/",
+      "송파구": "http://www.songpa.go.kr/",
+      "강동구": "https://www.gangdong.go.kr/"
+    }
+  },
+  "부산광역시": {
+    "광역": "http://www.busan.go.kr/",
+    "기초": {
+      "중구": "http://www.bsjunggu.go.kr/",
+      "서구": "http://www.bsseogu.go.kr/",
+      "동구": "http://www.bsdonggu.go.kr/",
+      "영도구": "http://www.yeongdo.go.kr/",
+      "부산진구": "https://www.busanjin.go.kr/",
+      "동래구": "http://www.dongnae.go.kr/",
+      "남구": "https://www.bsnamgu.go.kr/",
+      "북구": "http://www.bsbukgu.go.kr/",
+      "해운대구": "http://www.haeundae.go.kr/",
+      "사하구": "http://www.saha.go.kr/",
+      "금정구": "http://www.geumjeong.go.kr/",
+      "강서구": "http://www.bsgangseo.go.kr/",
+      "연제구": "http://www.yeonje.go.kr/",
+      "수영구": "http://www.suyeong.go.kr/",
+      "사상구": "http://www.sasang.go.kr/",
+      "기장군": "http://www.gijang.go.kr/"
+    }
+  },
+  "대구광역시": {
+    "광역": "http://www.daegu.go.kr/",
+    "기초": {
+      "중구": "http://www.jung.daegu.kr/",
+      "동구": "http://www.dong.daegu.kr/",
+      "서구": "https://www.dgs.go.kr/",
+      "남구": "http://www.nam.daegu.kr/",
+      "북구": "http://www.buk.daegu.kr/",
+      "수성구": "http://www.suseong.kr/",
+      "달서구": "http://www.dalseo.daegu.kr/",
+      "달성군": "http://www.dalseong.daegu.kr/",
+      "군위군": "http://www.gunwi.go.kr/"
+    }
+  },
+  "인천광역시": {
+    "광역": "http://www.incheon.go.kr/",
+    "기초": {
+      "중구": "https://www.icjg.go.kr/",
+      "동구": "http://www.icdonggu.go.kr/",
+      "미추홀구": "http://michu.incheon.kr/",
+      "연수구": "http://www.yeonsu.go.kr/",
+      "남동구": "http://www.namdong.go.kr/",
+      "부평구": "http://www.icbp.go.kr/",
+      "계양구": "http://www.gyeyang.go.kr/",
+      "서구": "https://www.seo.incheon.kr/",
+      "강화군": "http://www.ganghwa.go.kr/",
+      "옹진군": "http://www.ongjin.go.kr/"
+    }
+  },
+  "광주광역시": {
+    "광역": "http://www.gwangju.go.kr/",
+    "기초": {
+      "동구": "http://www.donggu.kr/",
+      "서구": "http://seogu.gwangju.kr/",
+      "남구": "https://www.namgu.gwangju.kr/",
+      "북구": "http://bukgu.gwangju.kr/",
+      "광산구": "http://www.gwangsan.go.kr/"
+    }
+  },
+  "대전광역시": {
+    "광역": "https://www.daejeon.go.kr/",
+    "기초": {
+      "동구": "https://www.donggu.go.kr/",
+      "중구": "http://www.djjunggu.go.kr/",
+      "서구": "http://www.seogu.go.kr/",
+      "유성구": "http://www.yuseong.go.kr/",
+      "대덕구": "http://www.daedeok.go.kr/"
+    }
+  },
+  "울산광역시": {
+    "광역": "http://www.ulsan.go.kr/",
+    "기초": {
+      "중구": "http://www.junggu.ulsan.kr/",
+      "남구": "http://www.ulsannamgu.go.kr/",
+      "동구": "http://www.donggu.ulsan.kr/",
+      "북구": "http://www.bukgu.ulsan.kr/",
+      "울주군": "http://www.ulju.ulsan.kr/"
+    }
+  },
+  "세종특별자치시": {
+    "광역": "http://www.sejong.go.kr/"
+  },
+  "경기도": {
+    "광역": "https://www.gg.go.kr/",
+    "기초": {
+      "수원시": "http://www.suwon.go.kr/",
+      "성남시": "https://www.seongnam.go.kr/",
+      "의정부시": "https://www.ui4u.go.kr/",
+      "안양시": "http://www.anyang.go.kr/",
+      "부천시": "http://www.bucheon.go.kr/",
+      "광명시": "http://www.gm.go.kr/",
+      "평택시": "https://www.pyeongtaek.go.kr/",
+      "동두천시": "http://www.ddc.go.kr/",
+      "안산시": "http://www.ansan.go.kr/",
+      "고양시": "http://www.goyang.go.kr/",
+      "과천시": "http://www.gccity.go.kr/",
+      "구리시": "http://www.guri.go.kr/",
+      "남양주시": "https://www.nyj.go.kr/",
+      "오산시": "http://www.osan.go.kr/",
+      "시흥시": "http://www.siheung.go.kr/",
+      "군포시": "http://www.gunpo.go.kr/",
+      "의왕시": "https://www.uiwang.go.kr/",
+      "하남시": "http://www.hanam.go.kr/",
+      "용인시": "https://www.yongin.go.kr/",
+      "파주시": "http://www.paju.go.kr/",
+      "이천시": "http://www.icheon.go.kr/",
+      "안성시": "https://www.anseong.go.kr/",
+      "김포시": "http://www.gimpo.go.kr/",
+      "화성시": "http://www.hscity.go.kr/",
+      "광주시": "https://www.gjcity.go.kr/",
+      "양주시": "http://www.yangju.go.kr/",
+      "포천시": "http://www.pocheon.go.kr/",
+      "여주시": "http://www.yeoju.go.kr/",
+      "연천군": "https://www.yeoncheon.go.kr/",
+      "가평군": "http://www.gp.go.kr/",
+      "양평군": "https://www.yp21.go.kr/"
+    }
+  },
+  "강원특별자치도": {
+    "광역": "https://state.gwd.go.kr/",
+    "기초": {
+      "춘천시": "http://www.chuncheon.go.kr/",
+      "원주시": "http://www.wonju.go.kr/",
+      "강릉시": "https://www.gn.go.kr/",
+      "동해시": "http://www.dh.go.kr/",
+      "태백시": "http://www.taebaek.go.kr/",
+      "속초시": "http://www.sokcho.go.kr/",
+      "삼척시": "http://www.samcheok.go.kr/",
+      "홍천군": "https://www.hongcheon.go.kr/",
+      "횡성군": "https://www.hsg.go.kr/",
+      "영월군": "https://www.yw.go.kr/",
+      "평창군": "https://www.pc.go.kr/",
+      "정선군": "http://www.jeongseon.go.kr/",
+      "철원군": "http://www.cwg.go.kr/",
+      "화천군": "http://www.ihc.go.kr/",
+      "양구군": "https://www.yanggu.go.kr/",
+      "인제군": "http://www.inje.go.kr/",
+      "고성군": "https://www.gwgs.go.kr/",
+      "양양군": "https://www.yangyang.go.kr/"
+    }
+  },
+  "충청북도": {
+    "광역": "http://www.chungbuk.go.kr/",
+    "기초": {
+      "청주시": "https://www.cheongju.go.kr/",
+      "충주시": "http://www.chungju.go.kr/",
+      "제천시": "http://www.jecheon.go.kr/",
+      "보은군": "https://www.boeun.go.kr/",
+      "옥천군": "https://www.oc.go.kr/",
+      "영동군": "http://www.yd21.go.kr/",
+      "증평군": "https://www.jp.go.kr/",
+      "진천군": "http://www.jincheon.go.kr/",
+      "괴산군": "https://www.goesan.go.kr/",
+      "음성군": "https://www.eumseong.go.kr/",
+      "단양군": "https://www.danyang.go.kr/"
+    }
+  },
+  "충청남도": {
+    "광역": "http://www.chungnam.go.kr/",
+    "기초": {
+      "천안시": "http://www.cheonan.go.kr/",
+      "공주시": "http://www.gongju.go.kr/",
+      "당진시": "http://www.dangjin.go.kr/",
+      "보령시": "http://www.boryeong.chungnam.kr/",
+      "아산시": "http://www.asan.go.kr/",
+      "서산시": "http://www.seosan.go.kr/",
+      "논산시": "http://www.nonsan.go.kr/",
+      "계룡시": "http://www.gyeryong.go.kr/",
+      "금산군": "http://www.geumsan.go.kr/",
+      "부여군": "http://www.buyeo.go.kr/",
+      "서천군": "http://www.seocheon.go.kr/",
+      "청양군": "http://www.cheongyang.go.kr/",
+      "홍성군": "http://www.hongseong.go.kr/",
+      "예산군": "http://www.yesan.go.kr/",
+      "태안군": "http://www.taean.go.kr/"
+    }
+  },
+  "전북특별자치도": {
+    "광역": "http://www.jeonbuk.go.kr/",
+    "기초": {
+      "전주시": "http://www.jeonju.go.kr/",
+      "군산시": "https://www.gunsan.go.kr/",
+      "익산시": "http://www.iksan.go.kr/",
+      "정읍시": "http://www.jeongeup.go.kr/",
+      "남원시": "http://www.namwon.go.kr/",
+      "김제시": "http://www.gimje.go.kr/",
+      "완주군": "http://www.wanju.go.kr/",
+      "진안군": "https://www.jinan.go.kr/",
+      "무주군": "https://www.muju.go.kr/",
+      "장수군": "http://www.jangsu.go.kr/",
+      "임실군": "http://www.imsil.go.kr/",
+      "순창군": "http://www.sunchang.go.kr/",
+      "고창군": "http://www.gochang.go.kr/",
+      "부안군": "https://www.buan.go.kr/"
+    }
+  },
+  "전라남도": {
+    "광역": "https://www.jeonnam.go.kr/",
+    "기초": {
+      "목포시": "http://www.mokpo.go.kr/",
+      "여수시": "http://www.yeosu.go.kr/",
+      "순천시": "https://www.suncheon.go.kr/",
+      "나주시": "http://www.naju.go.kr/",
+      "광양시": "http://www.gwangyang.go.kr/",
+      "담양군": "http://www.damyang.go.kr/",
+      "곡성군": "http://www.gokseong.go.kr/",
+      "구례군": "http://www.gurye.go.kr/",
+      "고흥군": "https://www.goheung.go.kr/",
+      "보성군": "http://www.boseong.go.kr/",
+      "화순군": "https://www.hwasun.go.kr/",
+      "장흥군": "http://www.jangheung.go.kr/",
+      "강진군": "http://www.gangjin.go.kr/",
+      "해남군": "http://www.haenam.go.kr/",
+      "영암군": "http://www.yeongam.go.kr/",
+      "무안군": "http://www.muan.go.kr/",
+      "함평군": "https://www.hampyeong.go.kr/",
+      "영광군": "http://www.yeonggwang.go.kr/",
+      "장성군": "http://www.jangseong.go.kr/",
+      "완도군": "http://www.wando.go.kr/",
+      "진도군": "http://www.jindo.go.kr/",
+      "신안군": "http://www.shinan.go.kr/"
+    }
+  },
+  "경상북도": {
+    "광역": "http://www.gb.go.kr/",
+    "기초": {
+      "포항시": "https://www.pohang.go.kr/",
+      "경주시": "http://www.gyeongju.go.kr/",
+      "김천시": "http://www.gc.go.kr/",
+      "안동시": "https://www.andong.go.kr/",
+      "구미시": "http://www.gumi.go.kr/",
+      "영주시": "http://www.yeongju.go.kr/",
+      "영천시": "https://www.yc.go.kr/",
+      "상주시": "http://www.sangju.go.kr/",
+      "문경시": "https://www.gbmg.go.kr/",
+      "경산시": "http://gbgs.go.kr/",
+      "의성군": "http://www.usc.go.kr/",
+      "청송군": "http://www.cs.go.kr/",
+      "영양군": "http://www.yyg.go.kr/",
+      "영덕군": "http://www.yd.go.kr/",
+      "청도군": "http://www.cheongdo.go.kr/",
+      "고령군": "http://www.goryeong.go.kr/",
+      "성주군": "http://www.sj.go.kr/",
+      "칠곡군": "https://www.chilgok.go.kr/",
+      "예천군": "http://www.ycg.kr/",
+      "봉화군": "http://www.bonghwa.go.kr/",
+      "울진군": "http://www.uljin.go.kr/",
+      "울릉군": "http://www.ulleung.go.kr/"
+    }
+  },
+  "경상남도": {
+    "광역": "http://www.gyeongnam.go.kr/",
+    "기초": {
+      "창원시": "https://www.changwon.go.kr/",
+      "진주시": "http://www.jinju.go.kr/",
+      "통영시": "http://www.tongyeong.go.kr/",
+      "사천시": "http://www.sacheon.go.kr/",
+      "김해시": "http://www.gimhae.go.kr/",
+      "밀양시": "http://www.miryang.go.kr/",
+      "거제시": "https://www.geoje.go.kr/",
+      "양산시": "http://www.yangsan.go.kr/",
+      "의령군": "http://www.uiryeong.go.kr/",
+      "함안군": "https://www.haman.go.kr/",
+      "창녕군": "http://www.cng.go.kr/",
+      "고성군": "https://www.goseong.go.kr/",
+      "남해군": "http://www.namhae.go.kr/",
+      "하동군": "http://www.hadong.go.kr/",
+      "산청군": "http://www.sancheong.go.kr/",
+      "함양군": "http://www.hygn.go.kr/",
+      "거창군": "http://www.geochang.go.kr/",
+      "합천군": "http://www.hc.go.kr/"
+    }
+  },
+  "제주특별자치도": {
+    "광역": "http://www.jeju.go.kr/",
+    "기초": {
+      "제주시": "http://www.jejusi.go.kr/",
+      "서귀포시": "http://www.seogwipo.go.kr/"
+    }
+  }
+}
