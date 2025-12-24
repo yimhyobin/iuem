@@ -253,14 +253,14 @@ const DataManager = {
                         // 지원사업: category='support' AND 교육 분야 제외
                         posts = posts.filter(post =>
                             post.category === 'support' &&
-                            !EducationFields.includes(post.supportField)
+                            !isEducationField(post.supportField)
                         );
                         break;
                     case 'education':
                         // 교육: category='support' AND 교육 분야
                         posts = posts.filter(post =>
                             post.category === 'support' &&
-                            EducationFields.includes(post.supportField)
+                            isEducationField(post.supportField)
                         );
                         break;
                     case 'seminar':
@@ -333,8 +333,14 @@ const CategoryMap = {
     'notice': '공지사항'
 };
 
-// 교육 관련 지원분야
-const EducationFields = ['멘토링·컨설팅·교육', '창업교육'];
+// 교육 관련 키워드 (포함 여부로 체크)
+const EducationKeywords = ['교육', '멘토링', '컨설팅', '멘토', '코칭', '아카데미', '캠프'];
+
+// 교육 분야인지 확인
+function isEducationField(supportField) {
+    if (!supportField) return false;
+    return EducationKeywords.some(keyword => supportField.includes(keyword));
+}
 
 const StatusMap = {
     'ongoing': '진행중',
