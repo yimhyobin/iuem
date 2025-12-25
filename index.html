@@ -21,15 +21,31 @@
                 <ul class="nav-list">
                     <li class="nav-item active" data-category="support">
                         <a href="#" class="nav-link">지원사업</a>
+                        <ul class="nav-dropdown">
+                            <li><a href="#" data-status="ongoing">모집중</a></li>
+                            <li><a href="#" data-status="closed">모집마감</a></li>
+                        </ul>
                     </li>
                     <li class="nav-item" data-category="education">
                         <a href="#" class="nav-link">교육</a>
+                        <ul class="nav-dropdown">
+                            <li><a href="#" data-status="ongoing">모집중</a></li>
+                            <li><a href="#" data-status="closed">모집마감</a></li>
+                        </ul>
                     </li>
                     <li class="nav-item" data-category="seminar">
                         <a href="#" class="nav-link">행사/세미나</a>
+                        <ul class="nav-dropdown">
+                            <li><a href="#" data-status="ongoing">진행중</a></li>
+                            <li><a href="#" data-status="closed">종료</a></li>
+                        </ul>
                     </li>
                     <li class="nav-item" data-category="festival">
                         <a href="#" class="nav-link">축제</a>
+                        <ul class="nav-dropdown">
+                            <li><a href="#" data-status="ongoing">진행중</a></li>
+                            <li><a href="#" data-status="closed">종료</a></li>
+                        </ul>
                     </li>
                     <li class="nav-item" data-category="notice">
                         <a href="#" class="nav-link">공지사항</a>
@@ -358,8 +374,9 @@
     <script src="auth.js"></script>
     <script src="script.js"></script>
     <script>
-        // 현재 카테고리
+        // 현재 카테고리 및 상태 필터
         let currentCategory = 'support';
+        let currentStatusFilter = null; // null = 전체, 'ongoing' = 모집중/진행중, 'closed' = 마감/종료
         let currentPage = 1;
         const itemsPerPage = 10;
 
@@ -414,12 +431,36 @@
         // 네비게이션 설정
         function setupNavigation() {
             const navItems = document.querySelectorAll('.nav-item');
+
+            // 메인 네비게이션 클릭 (전체 보기)
             navItems.forEach(item => {
-                item.addEventListener('click', function(e) {
+                const navLink = item.querySelector('.nav-link');
+                navLink.addEventListener('click', function(e) {
                     e.preventDefault();
                     navItems.forEach(nav => nav.classList.remove('active'));
-                    this.classList.add('active');
-                    currentCategory = this.dataset.category;
+                    item.classList.add('active');
+                    currentCategory = item.dataset.category;
+                    currentStatusFilter = null; // 전체 보기
+                    currentPage = 1;
+                    updatePageTitle();
+                    loadResults();
+                });
+            });
+
+            // 드롭다운 메뉴 클릭 (상태별 필터)
+            document.querySelectorAll('.nav-dropdown a').forEach(dropdownItem => {
+                dropdownItem.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const navItem = this.closest('.nav-item');
+                    const status = this.dataset.status;
+
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    navItem.classList.add('active');
+
+                    currentCategory = navItem.dataset.category;
+                    currentStatusFilter = status;
                     currentPage = 1;
                     updatePageTitle();
                     loadResults();
@@ -436,9 +477,26 @@
                 'festival': { title: '축제', desc: '전국 축제 정보를 확인하세요.' },
                 'notice': { title: '공지사항', desc: '창업지원 포털의 공지사항입니다.' }
             };
-            document.getElementById('pageTitle').textContent = titles[currentCategory].title;
+
+            let titleText = titles[currentCategory].title;
+
+            // 상태 필터가 있으면 타이틀에 추가
+            if (currentStatusFilter) {
+                const statusLabels = {
+                    'support': { ongoing: '모집중', closed: '모집마감' },
+                    'education': { ongoing: '모집중', closed: '모집마감' },
+                    'seminar': { ongoing: '진행중', closed: '종료' },
+                    'festival': { ongoing: '진행중', closed: '종료' }
+                };
+                const label = statusLabels[currentCategory]?.[currentStatusFilter];
+                if (label) {
+                    titleText += ` - ${label}`;
+                }
+            }
+
+            document.getElementById('pageTitle').textContent = titleText;
             document.getElementById('pageDesc').textContent = titles[currentCategory].desc;
-            document.getElementById('breadcrumbCurrent').textContent = titles[currentCategory].title;
+            document.getElementById('breadcrumbCurrent').textContent = titleText;
         }
 
         // D-day 계산
@@ -467,7 +525,30 @@
             filters.category = currentCategory;
             filters.sort = document.getElementById('sortSelect').value;
 
-            const allPosts = await DataManager.searchPosts(filters);
+            let allPosts = await DataManager.searchPosts(filters);
+
+            // 상태 필터 적용 (모집중/마감)
+            if (currentStatusFilter) {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                allPosts = allPosts.filter(post => {
+                    const endDate = post.endDate ? new Date(post.endDate) : null;
+                    const startDate = post.startDate ? new Date(post.startDate) : null;
+
+                    if (currentStatusFilter === 'ongoing') {
+                        // 모집중/진행중: 종료일이 없거나 종료일이 오늘 이후
+                        if (!endDate) return true;
+                        return endDate >= today;
+                    } else if (currentStatusFilter === 'closed') {
+                        // 마감/종료: 종료일이 오늘 이전
+                        if (!endDate) return false;
+                        return endDate < today;
+                    }
+                    return true;
+                });
+            }
+
             const totalCount = allPosts.length;
 
             // 페이지네이션 적용
