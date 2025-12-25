@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>목록 - IUEM 이음</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7393735448519226" crossorigin="anonymous"></script>
+    <style>
+        /* 리스트 페이지 전용 스타일 */
+        .list-header {
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+        .list-header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 60px;
+        }
+        .list-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .list-logo .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: #3b5998;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .list-logo .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+        }
+        .list-nav {
+            display: flex;
+            gap: 5px;
+        }
+        .list-nav a {
+            padding: 10px 18px;
+            color: #333;
+            font-size: 15px;
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .list-nav a:hover {
+            background: #f5f5f5;
+        }
+        .list-nav a.active {
+            color: #3b5998;
+            font-weight: 600;
+        }
+        .list-nav a.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 3px;
+            background: #3b5998;
+            border-radius: 2px;
+        }
+        /* 드롭다운 */
+        .nav-item-wrap {
+            position: relative;
+        }
+        .nav-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            min-width: 120px;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 1001;
+            padding: 8px 0;
+        }
+        .nav-item-wrap:hover .nav-dropdown {
+            display: block;
+        }
+        .nav-dropdown a {
+            display: block;
+            padding: 10px 16px;
+            font-size: 14px;
+            color: #333;
+        }
+        .nav-dropdown a:hover {
+            background: #f5f7fa;
+            color: #3b5998;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-header {
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .btn-header.login { color: #333; }
+        .btn-header.register {
+            background: #3b5998;
+            color: white;
+        }
+
+        /* 메인 콘텐츠 */
+        .list-page {
+            background: #f5f6f8;
+            min-height: 100vh;
+            padding-top: 60px;
+        }
+        .page-header {
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 30px 0;
+        }
+        .page-header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .page-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+            margin: 0 0 8px 0;
+        }
+        .page-header p {
+            color: #666;
+            font-size: 15px;
+            margin: 0;
+        }
+
+        /* 검색 및 필터 */
+        .search-filter-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 25px 20px;
+        }
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .search-box input {
+            flex: 1;
+            padding: 14px 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+        }
+        .search-box input:focus {
+            border-color: #3b5998;
+        }
+        .search-box button {
+            padding: 14px 30px;
+            background: #3b5998;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .filter-tab {
+            padding: 10px 20px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .filter-tab:hover {
+            border-color: #3b5998;
+            color: #3b5998;
+        }
+        .filter-tab.active {
+            background: #3b5998;
+            border-color: #3b5998;
+            color: white;
+        }
+
+        /* 결과 리스트 */
+        .results-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px 40px;
+        }
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .results-count {
+            font-size: 15px;
+            color: #666;
+        }
+        .results-count strong {
+            color: #3b5998;
+        }
+        .sort-select {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            background: white;
+        }
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        .result-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        .result-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        .card-image {
+            height: 180px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .card-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .card-badge.ongoing {
+            background: #4caf50;
+            color: white;
+        }
+        .card-badge.closed {
+            background: #9e9e9e;
+            color: white;
+        }
+        .card-badge.upcoming {
+            background: #ff9800;
+            color: white;
+        }
+        .card-content {
+            padding: 20px;
+        }
+        .card-category {
+            display: inline-block;
+            padding: 4px 10px;
+            background: #f0f4ff;
+            color: #3b5998;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .card-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: #333;
+            margin: 0 0 12px 0;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .card-title a {
+            color: inherit;
+            text-decoration: none;
+        }
+        .card-title a:hover {
+            color: #3b5998;
+        }
+        .card-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            font-size: 13px;
+            color: #888;
+        }
+        .card-info span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .card-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .card-date {
+            font-size: 13px;
+            color: #888;
+        }
+        .btn-scrap {
+            padding: 6px 12px;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #666;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-scrap.active {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        /* 페이지네이션 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            margin-top: 40px;
+        }
+        .page-btn {
+            padding: 10px 16px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        .page-btn:hover:not(:disabled) {
+            border-color: #3b5998;
+            color: #3b5998;
+        }
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .page-numbers {
+            display: flex;
+            gap: 5px;
+        }
+        .page-num {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        .page-num:hover {
+            border-color: #3b5998;
+            color: #3b5998;
+        }
+        .page-num.active {
+            background: #3b5998;
+            border-color: #3b5998;
+            color: white;
+        }
+
+        .empty-result {
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+        }
+
+        /* 푸터 */
+        .list-footer {
+            background: #f8f9fa;
+            border-top: 1px solid #e0e0e0;
+            padding: 30px 20px;
+        }
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .footer-inner p {
+            color: #888;
+            font-size: 13px;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .list-nav { display: none; }
+            .results-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 헤더 -->
+    <header class="list-header">
+        <div class="list-header-inner">
+            <a href="index.html" class="list-logo">
+                <span class="logo-icon">IE</span>
+                <span class="logo-text">이음</span>
+            </a>
+            <nav class="list-nav">
+                <a href="index.html">홈</a>
+                <div class="nav-item-wrap">
+                    <a href="list.html?category=support" data-category="support">지원사업</a>
+                    <div class="nav-dropdown">
+                        <a href="list.html?category=support&status=ongoing">모집중</a>
+                        <a href="list.html?category=support&status=closed">모집마감</a>
+                    </div>
+                </div>
+                <div class="nav-item-wrap">
+                    <a href="list.html?category=education" data-category="education">교육/세미나</a>
+                    <div class="nav-dropdown">
+                        <a href="list.html?category=education&status=ongoing">모집중</a>
+                        <a href="list.html?category=education&status=closed">모집마감</a>
+                    </div>
+                </div>
+                <div class="nav-item-wrap">
+                    <a href="list.html?category=festival" data-category="festival">행사/축제</a>
+                    <div class="nav-dropdown">
+                        <a href="list.html?category=festival&status=ongoing">진행중</a>
+                        <a href="list.html?category=festival&status=closed">종료</a>
+                    </div>
+                </div>
+            </nav>
+            <div class="header-right" id="headerRight">
+                <a href="login.html" class="btn-header login">로그인</a>
+                <a href="register.html" class="btn-header register">회원가입</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 -->
+    <main class="list-page">
+        <div class="page-header">
+            <div class="page-header-inner">
+                <h1 id="pageTitle">지원사업</h1>
+                <p id="pageDesc">창업 지원사업 정보를 검색하세요.</p>
+            </div>
+        </div>
+
+        <div class="search-filter-section">
+            <div class="search-box">
+                <input type="text" id="searchKeyword" placeholder="검색어를 입력하세요">
+                <button onclick="performSearch()">검색</button>
+            </div>
+            <div class="filter-tabs">
+                <button class="filter-tab active" data-status="">전체</button>
+                <button class="filter-tab" data-status="ongoing">모집중</button>
+                <button class="filter-tab" data-status="closed">마감</button>
+            </div>
+        </div>
+
+        <div class="results-section">
+            <div class="results-header">
+                <div class="results-count">총 <strong id="totalCount">0</strong>건</div>
+                <select id="sortSelect" class="sort-select" onchange="changeSort()">
+                    <option value="latest">최신순</option>
+                    <option value="endDate">마감임박순</option>
+                </select>
+            </div>
+            <div class="results-grid" id="resultsList">
+                <!-- 동적 생성 -->
+            </div>
+            <div class="pagination" id="pagination"></div>
+        </div>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="list-footer">
+        <div class="footer-inner">
+            <p>© 2025 IEUM(이음). All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="data.js"></script>
+    <script src="auth.js"></script>
+    <script>
+        // 상태
+        let currentCategory = 'support';
+        let currentStatusFilter = '';
+        let currentPage = 1;
+        const itemsPerPage = 12;
+
+        const CategoryInfo = {
+            'support': { title: '지원사업', desc: '창업 지원사업 정보를 검색하세요.' },
+            'education': { title: '교육/세미나', desc: '창업 교육 및 멘토링 프로그램을 검색하세요.' },
+            'seminar': { title: '행사/네트워킹', desc: '창업 관련 행사 정보를 확인하세요.' },
+            'festival': { title: '축제', desc: '전국 축제 정보를 확인하세요.' },
+            'notice': { title: '공지사항', desc: '공지사항입니다.' }
+        };
+
+        // 초기화
+        document.addEventListener('DOMContentLoaded', async function() {
+            await DataManager.init();
+
+            // URL 파라미터 파싱
+            const urlParams = new URLSearchParams(window.location.search);
+            currentCategory = urlParams.get('category') || 'support';
+            currentStatusFilter = urlParams.get('status') || '';
+            const keyword = urlParams.get('keyword') || '';
+
+            if (keyword) {
+                document.getElementById('searchKeyword').value = keyword;
+            }
+
+            updatePageHeader();
+            updateNavActive();
+            updateFilterTabs();
+            updateAuthUI();
+            loadResults();
+        });
+
+        function updateAuthUI() {
+            const user = Auth.getCurrentUser();
+            const headerRight = document.getElementById('headerRight');
+            if (user) {
+                headerRight.innerHTML = `
+                    <span style="color:#666;font-size:14px;">${user.userName}님</span>
+                    ${user.isAdmin ? '<a href="admin.html" class="btn-header login">관리자</a>' : ''}
+                    <button onclick="logout()" class="btn-header register" style="border:none;cursor:pointer;">로그아웃</button>
+                `;
+            }
+        }
+
+        async function logout() {
+            await Auth.logout();
+            location.reload();
+        }
+
+        function updatePageHeader() {
+            const info = CategoryInfo[currentCategory] || CategoryInfo['support'];
+            document.getElementById('pageTitle').textContent = info.title;
+            document.getElementById('pageDesc').textContent = info.desc;
+            document.title = `${info.title} - IUEM 이음`;
+        }
+
+        function updateNavActive() {
+            document.querySelectorAll('.list-nav a[data-category]').forEach(a => {
+                a.classList.toggle('active', a.dataset.category === currentCategory);
+            });
+        }
+
+        function updateFilterTabs() {
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.status === currentStatusFilter);
+            });
+
+            // 클릭 이벤트
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.onclick = function() {
+                    currentStatusFilter = this.dataset.status;
+                    currentPage = 1;
+                    updateFilterTabs();
+                    loadResults();
+                };
+            });
+        }
+
+        function performSearch() {
+            currentPage = 1;
+            loadResults();
+        }
+
+        function changeSort() {
+            currentPage = 1;
+            loadResults();
+        }
+
+        async function loadResults() {
+            const keyword = document.getElementById('searchKeyword').value.trim();
+            const sort = document.getElementById('sortSelect').value;
+
+            const filters = {
+                category: currentCategory,
+                keyword: keyword,
+                sort: sort
+            };
+
+            let posts = await DataManager.searchPosts(filters);
+
+            // 상태 필터
+            if (currentStatusFilter) {
+                const today = new Date();
+                today.setHours(0,0,0,0);
+
+                posts = posts.filter(post => {
+                    const endDate = post.endDate ? new Date(post.endDate) : null;
+                    if (currentStatusFilter === 'ongoing') {
+                        return !endDate || endDate >= today;
+                    } else {
+                        return endDate && endDate < today;
+                    }
+                });
+            }
+
+            const totalCount = posts.length;
+            document.getElementById('totalCount').textContent = totalCount;
+
+            // 페이지네이션
+            const startIdx = (currentPage - 1) * itemsPerPage;
+            const pagePosts = posts.slice(startIdx, startIdx + itemsPerPage);
+
+            renderResults(pagePosts);
+            renderPagination(totalCount);
+        }
+
+        function renderResults(posts) {
+            const container = document.getElementById('resultsList');
+
+            if (posts.length === 0) {
+                container.innerHTML = '<div class="empty-result"><p>검색 결과가 없습니다.</p></div>';
+                return;
+            }
+
+            container.innerHTML = posts.map(post => {
+                const today = new Date();
+                today.setHours(0,0,0,0);
+                const endDate = post.endDate ? new Date(post.endDate) : null;
+                let statusText = '진행중';
+                let statusClass = 'ongoing';
+
+                if (endDate && endDate < today) {
+                    statusText = '마감';
+                    statusClass = 'closed';
+                }
+
+                const hasImage = post.image || (post.images && post.images.length > 0);
+                const imageUrl = post.images?.[0] || post.image || '';
+
+                return `
+                    <div class="result-card">
+                        <div class="card-image" style="${hasImage ? '' : 'background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)'}">
+                            ${hasImage ? `<img src="${imageUrl}" alt="${post.title}" onerror="this.style.display='none'">` : ''}
+                            <span class="card-badge ${statusClass}">${statusText}</span>
+                        </div>
+                        <div class="card-content">
+                            <span class="card-category">${post.supportField || CategoryInfo[post.category]?.title || '지원사업'}</span>
+                            <h3 class="card-title"><a href="detail.html?id=${post.id}">${post.title}</a></h3>
+                            <div class="card-info">
+                                ${post.organization ? `<span>🏢 ${post.organization}</span>` : ''}
+                                ${post.region ? `<span>📍 ${post.region}</span>` : ''}
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <span class="card-date">${post.startDate || ''} ~ ${post.endDate || ''}</span>
+                            <button class="btn-scrap ${isScraped(post.id) ? 'active' : ''}" onclick="toggleScrap(this, '${post.id}')">
+                                ${isScraped(post.id) ? '★' : '☆'} 스크랩
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function isScraped(id) {
+            const scraps = JSON.parse(localStorage.getItem('scraps') || '[]');
+            return scraps.includes(id);
+        }
+
+        function toggleScrap(btn, id) {
+            let scraps = JSON.parse(localStorage.getItem('scraps') || '[]');
+            const idx = scraps.indexOf(id);
+            if (idx > -1) {
+                scraps.splice(idx, 1);
+                btn.classList.remove('active');
+                btn.innerHTML = '☆ 스크랩';
+            } else {
+                scraps.push(id);
+                btn.classList.add('active');
+                btn.innerHTML = '★ 스크랩';
+            }
+            localStorage.setItem('scraps', JSON.stringify(scraps));
+        }
+
+        function renderPagination(totalCount) {
+            const totalPages = Math.ceil(totalCount / itemsPerPage);
+            const container = document.getElementById('pagination');
+
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let html = `
+                <button class="page-btn" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>이전</button>
+                <div class="page-numbers">
+            `;
+
+            const start = Math.max(1, currentPage - 2);
+            const end = Math.min(totalPages, start + 4);
+
+            for (let i = start; i <= end; i++) {
+                html += `<button class="page-num ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            }
+
+            html += `
+                </div>
+                <button class="page-btn" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>다음</button>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            loadResults();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
