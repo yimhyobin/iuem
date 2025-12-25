@@ -13,131 +13,274 @@
     <script src="firebase-config.js"></script>
     <script src="data.js"></script>
     <style>
-        .detail-container {
-            max-width: 900px;
+        .detail-page {
+            background: #f5f6f8;
+            min-height: calc(100vh - 60px);
+            padding-top: 60px;
+        }
+
+        /* 상단 상태 헤더 */
+        .status-header {
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 25px 0;
+        }
+        .status-header-inner {
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 40px 20px;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
         }
-        .detail-header {
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #1a3a6e;
-        }
-        .detail-category {
-            display: inline-block;
-            background: #1a3a6e;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 4px;
-            font-size: 13px;
-            margin-bottom: 15px;
-        }
-        .detail-title {
-            font-size: 28px;
+        .status-info h2 {
+            font-size: 26px;
             font-weight: 700;
             color: #1a3a6e;
-            margin: 0 0 15px 0;
-            line-height: 1.4;
+            margin: 0 0 8px 0;
         }
-        .detail-meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
+        .status-info p {
             color: #666;
             font-size: 14px;
+            margin: 0;
         }
-        .detail-meta-item {
+        .share-buttons {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 12px;
         }
-        .detail-meta-label {
-            font-weight: 600;
-            color: #333;
-        }
-        .detail-status {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 13px;
-            font-weight: 600;
-        }
-        .detail-status.ongoing { background: #e8f5e9; color: #2e7d32; }
-        .detail-status.upcoming { background: #fff3e0; color: #ef6c00; }
-        .detail-status.closed { background: #fafafa; color: #999; }
-
-        .detail-body {
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            padding: 30px;
-            margin-bottom: 30px;
-        }
-        .detail-section {
-            margin-bottom: 25px;
-        }
-        .detail-section:last-child {
-            margin-bottom: 0;
-        }
-        .detail-section-title {
-            font-size: 16px;
-            font-weight: 700;
-            color: #1a3a6e;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        .detail-section-content {
-            color: #333;
-            line-height: 1.8;
-            font-size: 15px;
-        }
-        .detail-info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-        }
-        .detail-info-item {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 6px;
-        }
-        .detail-info-label {
-            font-size: 13px;
+        .share-buttons span {
             color: #666;
-            margin-bottom: 5px;
+            font-size: 13px;
         }
-        .detail-info-value {
-            font-size: 15px;
-            font-weight: 600;
-            color: #333;
+        .share-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            transition: transform 0.2s;
         }
-        .detail-image {
-            width: 100%;
-            max-height: 400px;
-            object-fit: cover;
-            border-radius: 8px;
+        .share-btn:hover {
+            transform: scale(1.1);
+        }
+        .share-btn.copy { background: #f5f5f5; color: #333; border: 1px solid #ddd; }
+        .share-btn.facebook { background: #1877f2; color: white; }
+        .share-btn.twitter { background: #000; color: white; }
+        .share-btn.kakao { background: #fee500; color: #000; }
+
+        /* 메인 컨테이너 */
+        .detail-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        /* 제목 섹션 */
+        .title-section {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            padding: 30px;
             margin-bottom: 20px;
         }
-        /* 이미지 갤러리 스타일 */
-        .image-gallery {
-            margin-bottom: 25px;
+        .title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+        }
+        .title-section h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+            line-height: 1.4;
+            flex: 1;
+        }
+        .btn-goto {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #1a3a6e;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 500;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: background 0.2s;
+        }
+        .btn-goto:hover {
+            background: #0d2440;
+        }
+
+        /* 정보 그리드 */
+        .info-grid {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            padding: 25px 30px;
+            margin-bottom: 20px;
+        }
+        .info-grid-inner {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+        }
+        .info-column {
+            padding: 0 20px;
+            border-right: 1px solid #e8e8e8;
+        }
+        .info-column:first-child {
+            padding-left: 0;
+        }
+        .info-column:last-child {
+            border-right: none;
+            padding-right: 0;
+        }
+        .info-row {
+            display: flex;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            color: #666;
+            font-size: 14px;
+            min-width: 80px;
+            display: flex;
+            align-items: center;
+        }
+        .info-label::before {
+            content: "•";
+            margin-right: 8px;
+            color: #1a3a6e;
+        }
+        .info-value {
+            color: #333;
+            font-size: 14px;
+            font-weight: 500;
+            flex: 1;
+        }
+
+        /* 본문 섹션 */
+        .content-section {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+        .content-header {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #1a3a6e;
+        }
+        .content-header .post-number {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .content-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a3a6e;
+            margin: 0 0 10px 0;
+        }
+        .content-header .notice-text {
+            color: #d32f2f;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .content-body {
+            color: #333;
+            font-size: 15px;
+            line-height: 1.8;
+        }
+        .content-body p {
+            margin-bottom: 15px;
+        }
+
+        /* 섹션 구분 */
+        .section-block {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .section-block h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin: 0 0 20px 0;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #333;
+        }
+        .section-block ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .section-block li {
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            line-height: 1.6;
+        }
+        .section-block li:last-child {
+            border-bottom: none;
+        }
+        .section-block li::before {
+            content: "•";
+            color: #1a3a6e;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .section-block .item-label {
+            color: #333;
+            font-weight: 600;
+            min-width: 100px;
+        }
+        .section-block .item-value {
+            color: #666;
+            flex: 1;
+        }
+        .section-block .highlight {
+            color: #d32f2f;
+        }
+
+        /* 이미지 갤러리 */
+        .image-section {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+        .image-section h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin: 0 0 20px 0;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #333;
         }
         .gallery-main {
             position: relative;
             width: 100%;
-            height: 400px;
+            height: 450px;
             border-radius: 8px;
             overflow: hidden;
             background: #f5f5f5;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
         .gallery-main img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
             cursor: pointer;
-            transition: opacity 0.3s;
         }
         .gallery-nav {
             position: absolute;
@@ -146,11 +289,11 @@
             background: rgba(0,0,0,0.5);
             color: white;
             border: none;
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 18px;
+            font-size: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -159,37 +302,37 @@
         .gallery-nav:hover {
             background: rgba(0,0,0,0.7);
         }
-        .gallery-nav.prev { left: 10px; }
-        .gallery-nav.next { right: 10px; }
+        .gallery-nav.prev { left: 15px; }
+        .gallery-nav.next { right: 15px; }
         .gallery-counter {
             position: absolute;
-            bottom: 10px;
-            right: 10px;
+            bottom: 15px;
+            right: 15px;
             background: rgba(0,0,0,0.6);
             color: white;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 13px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
         }
         .gallery-thumbs {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             overflow-x: auto;
             padding: 5px 0;
         }
         .gallery-thumb {
             flex-shrink: 0;
-            width: 80px;
-            height: 60px;
+            width: 100px;
+            height: 75px;
             border-radius: 6px;
             overflow: hidden;
             cursor: pointer;
-            border: 2px solid transparent;
+            border: 3px solid transparent;
             transition: border-color 0.2s, opacity 0.2s;
-            opacity: 0.7;
+            opacity: 0.6;
         }
         .gallery-thumb:hover {
-            opacity: 1;
+            opacity: 0.9;
         }
         .gallery-thumb.active {
             border-color: #1a3a6e;
@@ -200,7 +343,8 @@
             height: 100%;
             object-fit: cover;
         }
-        /* 이미지 모달 (확대 보기) */
+
+        /* 이미지 모달 */
         .image-modal {
             display: none;
             position: fixed;
@@ -208,8 +352,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 1000;
+            background: rgba(0,0,0,0.95);
+            z-index: 2000;
             justify-content: center;
             align-items: center;
         }
@@ -226,23 +370,54 @@
             top: 20px;
             right: 30px;
             color: white;
-            font-size: 35px;
+            font-size: 40px;
             cursor: pointer;
         }
         .image-modal .gallery-nav {
             position: absolute;
             top: 50%;
         }
+
+        /* TOP 버튼 */
+        .btn-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 60px;
+            background: #1a3a6e;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            transition: background 0.2s;
+        }
+        .btn-top:hover {
+            background: #0d2440;
+        }
+        .btn-top .arrow {
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+
+        /* 하단 버튼 */
         .detail-actions {
             display: flex;
-            gap: 10px;
+            gap: 15px;
             justify-content: center;
             margin-top: 30px;
         }
         .btn-action {
-            padding: 12px 30px;
+            padding: 14px 40px;
             border-radius: 6px;
-            font-size: 15px;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             text-decoration: none;
@@ -261,46 +436,53 @@
         }
         .btn-secondary {
             background: white;
-            color: #1a3a6e;
-            border: 2px solid #1a3a6e;
+            color: #333;
+            border: 1px solid #ddd;
         }
         .btn-secondary:hover {
             background: #f5f5f5;
         }
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            color: #666;
-            text-decoration: none;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-        .back-link:hover {
-            color: #1a3a6e;
-        }
+
         .loading {
             text-align: center;
-            padding: 60px;
+            padding: 100px;
             color: #666;
+            font-size: 16px;
         }
         .error-message {
             text-align: center;
-            padding: 60px;
+            padding: 100px;
             color: #d32f2f;
+            font-size: 16px;
         }
-        .detail-notice {
-            background: #fff3cd;
-            border: 1px solid #ffc107;
-            border-radius: 6px;
-            padding: 15px 20px;
-            margin-top: 20px;
-            text-align: center;
-        }
-        .detail-notice p {
-            margin: 0;
-            color: #856404;
-            font-size: 14px;
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .status-header-inner {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .title-row {
+                flex-direction: column;
+            }
+            .info-grid-inner {
+                grid-template-columns: 1fr;
+            }
+            .info-column {
+                padding: 0;
+                border-right: none;
+                border-bottom: 1px solid #e8e8e8;
+                padding-bottom: 15px;
+                margin-bottom: 15px;
+            }
+            .info-column:last-child {
+                border-bottom: none;
+                margin-bottom: 0;
+                padding-bottom: 0;
+            }
+            .gallery-main {
+                height: 300px;
+            }
         }
     </style>
 </head>
@@ -313,7 +495,7 @@
                     <span class="logo-text">창업지원 포털</span>
                 </a>
             </div>
-            <nav class="nav">
+            <nav class="main-nav">
                 <ul class="nav-list">
                     <li class="nav-item" data-category="support">
                         <a href="index.html?category=support" class="nav-link">지원사업</a>
@@ -332,20 +514,16 @@
                     </li>
                 </ul>
             </nav>
-            <div class="auth-buttons" id="authButtons">
+            <div class="header-utils" id="authButtons">
                 <a href="login.html" class="btn-login">로그인</a>
             </div>
         </div>
     </header>
 
     <!-- 메인 콘텐츠 -->
-    <main class="main-content">
-        <div class="detail-container">
-            <a href="javascript:history.back()" class="back-link">← 목록으로 돌아가기</a>
-
-            <div id="detailContent">
-                <div class="loading">데이터를 불러오는 중...</div>
-            </div>
+    <main class="detail-page">
+        <div id="detailContent">
+            <div class="loading">데이터를 불러오는 중...</div>
         </div>
     </main>
 
@@ -356,6 +534,12 @@
         <img id="modalImage" src="" alt="확대 이미지">
         <button class="gallery-nav next" onclick="changeModalImage(1)">&#10095;</button>
     </div>
+
+    <!-- TOP 버튼 -->
+    <button class="btn-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+        <span class="arrow">^</span>
+        TOP
+    </button>
 
     <!-- 푸터 -->
     <footer class="footer">
@@ -368,7 +552,6 @@
         // 갤러리 상태
         let currentImages = [];
         let currentIndex = 0;
-
 
         // URL에서 ID 가져오기
         const urlParams = new URLSearchParams(window.location.search);
@@ -398,40 +581,43 @@
             }
         }
 
-        // 이미지 갤러리 HTML 생성
-        function createGalleryHtml(images, title) {
-            if (!images || images.length === 0) return '';
+        // 상태 텍스트 가져오기
+        function getStatusText(post) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const endDate = post.endDate ? new Date(post.endDate) : null;
 
-            // 이미지가 1장이면 기존 방식
-            if (images.length === 1) {
-                return `<img src="${images[0]}" alt="${title}" class="detail-image" onclick="openModal(0)">`;
+            if (endDate && endDate < today) {
+                return { text: '마감', class: 'closed' };
             }
+            if (post.status === 'upcoming') {
+                return { text: '접수예정', class: 'upcoming' };
+            }
+            return { text: '모집중', class: 'ongoing' };
+        }
 
-            // 여러 이미지면 갤러리
-            const thumbsHtml = images.map((img, idx) =>
-                `<div class="gallery-thumb ${idx === 0 ? 'active' : ''}" onclick="changeImage(${idx})">
-                    <img src="${img}" alt="${title} ${idx + 1}">
-                </div>`
-            ).join('');
+        // 카테고리별 설명 텍스트
+        function getCategoryDesc(category) {
+            const descs = {
+                'support': '예비 창업자와 창업기업을 위한 창업지원사업공고를 확인하실 수 있습니다.',
+                'education': '창업 교육 및 멘토링 프로그램 정보를 확인하실 수 있습니다.',
+                'seminar': '창업 관련 행사 및 세미나 정보를 확인하실 수 있습니다.',
+                'festival': '전국 각지의 축제 정보를 확인하실 수 있습니다.',
+                'notice': '창업지원 포털의 공지사항입니다.'
+            };
+            return descs[category] || '';
+        }
 
-            return `
-                <div class="image-gallery">
-                    <div class="gallery-main">
-                        <img id="galleryMainImage" src="${images[0]}" alt="${title}" onclick="openModal(currentIndex)">
-                        <button class="gallery-nav prev" onclick="changeImage(currentIndex - 1)">&#10094;</button>
-                        <button class="gallery-nav next" onclick="changeImage(currentIndex + 1)">&#10095;</button>
-                        <div class="gallery-counter"><span id="imageCounter">1</span> / ${images.length}</div>
-                    </div>
-                    <div class="gallery-thumbs">${thumbsHtml}</div>
-                </div>
-            `;
+        // URL 복사
+        function copyUrl() {
+            navigator.clipboard.writeText(window.location.href);
+            alert('URL이 복사되었습니다.');
         }
 
         // 갤러리 이미지 변경
         function changeImage(index) {
             if (currentImages.length === 0) return;
 
-            // 순환 처리
             if (index < 0) index = currentImages.length - 1;
             if (index >= currentImages.length) index = 0;
 
@@ -494,116 +680,204 @@
         // 상세 렌더링
         function renderDetail(post) {
             const container = document.getElementById('detailContent');
+            const status = getStatusText(post);
 
-            // 이미지 배열 설정 (images 배열이 있으면 사용, 없으면 image 단일값 사용)
+            // 이미지 배열 설정
             currentImages = post.images && post.images.length > 0
                 ? post.images
                 : (post.image ? [post.image] : []);
             currentIndex = 0;
 
-            const galleryHtml = createGalleryHtml(currentImages, post.title);
+            // 갤러리 HTML
+            let galleryHtml = '';
+            if (currentImages.length > 0) {
+                const thumbsHtml = currentImages.length > 1 ? currentImages.map((img, idx) =>
+                    `<div class="gallery-thumb ${idx === 0 ? 'active' : ''}" onclick="changeImage(${idx})">
+                        <img src="${img}" alt="이미지 ${idx + 1}">
+                    </div>`
+                ).join('') : '';
+
+                galleryHtml = `
+                    <div class="image-section">
+                        <h3>홍보 이미지</h3>
+                        <div class="gallery-main">
+                            <img id="galleryMainImage" src="${currentImages[0]}" alt="${post.title}" onclick="openModal(currentIndex)">
+                            ${currentImages.length > 1 ? `
+                            <button class="gallery-nav prev" onclick="changeImage(currentIndex - 1)">&#10094;</button>
+                            <button class="gallery-nav next" onclick="changeImage(currentIndex + 1)">&#10095;</button>
+                            <div class="gallery-counter"><span id="imageCounter">1</span> / ${currentImages.length}</div>
+                            ` : ''}
+                        </div>
+                        ${thumbsHtml ? `<div class="gallery-thumbs">${thumbsHtml}</div>` : ''}
+                    </div>
+                `;
+            }
 
             container.innerHTML = `
-                <div class="detail-header">
-                    <span class="detail-category">${post.supportField || CategoryMap[post.category]}</span>
-                    <h1 class="detail-title">${post.title}</h1>
-                    <div class="detail-meta">
-                        ${post.status ? `
-                        <div class="detail-meta-item">
-                            <span class="detail-status ${post.status}">${StatusMap[post.status]}</span>
+                <!-- 상태 헤더 -->
+                <div class="status-header">
+                    <div class="status-header-inner">
+                        <div class="status-info">
+                            <h2>${status.text}</h2>
+                            <p>${getCategoryDesc(post.category)}</p>
                         </div>
-                        ` : ''}
-                        ${post.organization ? `
-                        <div class="detail-meta-item">
-                            <span class="detail-meta-label">주관기관:</span>
-                            <span>${post.organization}</span>
+                        <div class="share-buttons">
+                            <span>URL복사</span>
+                            <button class="share-btn copy" onclick="copyUrl()" title="URL 복사">📋</button>
+                            <button class="share-btn facebook" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href))" title="페이스북">f</button>
+                            <button class="share-btn twitter" onclick="window.open('https://twitter.com/intent/tweet?url='+encodeURIComponent(location.href))" title="트위터">X</button>
+                            <button class="share-btn kakao" title="카카오톡">K</button>
                         </div>
-                        ` : ''}
-                        ${post.region ? `
-                        <div class="detail-meta-item">
-                            <span class="detail-meta-label">지역:</span>
-                            <span>${post.region}</span>
-                        </div>
-                        ` : ''}
                     </div>
                 </div>
 
-                <div class="detail-body">
+                <div class="detail-container">
+                    <!-- 제목 섹션 -->
+                    <div class="title-section">
+                        <div class="title-row">
+                            <h1>${post.title}</h1>
+                            ${post.applicationUrl ? `
+                            <a href="${post.applicationUrl}" target="_blank" class="btn-goto">
+                                <span>◎</span> 사업안내 바로가기
+                            </a>
+                            ` : ''}
+                        </div>
+                    </div>
+
+                    <!-- 정보 그리드 -->
+                    <div class="info-grid">
+                        <div class="info-grid-inner">
+                            <div class="info-column">
+                                ${post.supportField ? `
+                                <div class="info-row">
+                                    <span class="info-label">지원분야</span>
+                                    <span class="info-value">${post.supportField}</span>
+                                </div>
+                                ` : ''}
+                                ${post.target ? `
+                                <div class="info-row">
+                                    <span class="info-label">대상연령</span>
+                                    <span class="info-value">${post.age || '전체'}</span>
+                                </div>
+                                ` : `
+                                <div class="info-row">
+                                    <span class="info-label">대상연령</span>
+                                    <span class="info-value">${post.age || '전체'}</span>
+                                </div>
+                                `}
+                                ${post.department ? `
+                                <div class="info-row">
+                                    <span class="info-label">기관구분</span>
+                                    <span class="info-value">${post.department}</span>
+                                </div>
+                                ` : ''}
+                                ${post.organization ? `
+                                <div class="info-row">
+                                    <span class="info-label">담당부서</span>
+                                    <span class="info-value">${post.organization}</span>
+                                </div>
+                                ` : ''}
+                            </div>
+                            <div class="info-column">
+                                <div class="info-row">
+                                    <span class="info-label">지역</span>
+                                    <span class="info-value">${post.region || '전국'}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">접수기간</span>
+                                    <span class="info-value">${post.startDate || '-'} ~ ${post.endDate || ''}</span>
+                                </div>
+                                ${post.organization ? `
+                                <div class="info-row">
+                                    <span class="info-label">주관기관명</span>
+                                    <span class="info-value">${post.organization}</span>
+                                </div>
+                                ` : ''}
+                            </div>
+                            <div class="info-column">
+                                <div class="info-row">
+                                    <span class="info-label">대상</span>
+                                    <span class="info-value">${post.target || post.targetAudience || '전체'}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">창업업력</span>
+                                    <span class="info-value">${post.career || '전체'}</span>
+                                </div>
+                                ${post.phoneNumber ? `
+                                <div class="info-row">
+                                    <span class="info-label">연락처</span>
+                                    <span class="info-value">${post.phoneNumber}</span>
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 이미지 갤러리 -->
                     ${galleryHtml}
 
-                    ${post.startDate || post.endDate ? `
-                    <div class="detail-section">
-                        <h2 class="detail-section-title">접수기간</h2>
-                        <div class="detail-section-content">
-                            ${post.startDate || ''} ~ ${post.endDate || ''}
+                    <!-- 본문 섹션 -->
+                    <div class="content-section">
+                        <div class="content-header">
+                            ${post.id ? `<div class="post-number">공고 제 ${post.id.substring(0,8)}호</div>` : ''}
+                            <h2>${post.title}</h2>
+                            ${post.source === 'tour-api' ? '' : `
+                            <p class="notice-text">※(유의)해당 공고는 정보 제공 목적으로 수집된 자료이며, 상세 내용은 원본 페이지에서 확인하시기 바랍니다.</p>
+                            `}
                         </div>
-                    </div>
-                    ` : ''}
-
-                    ${post.description ? `
-                    <div class="detail-section">
-                        <h2 class="detail-section-title">상세내용</h2>
-                        <div class="detail-section-content">
-                            ${post.description.replace(/\n/g, '<br>')}
+                        <div class="content-body">
+                            ${post.summary ? `<p>${post.summary}</p>` : ''}
+                            ${post.description ? `<p>${post.description.replace(/\n/g, '<br>')}</p>` : ''}
+                            ${post.content ? `<p>${post.content.replace(/\n/g, '<br>')}</p>` : ''}
                         </div>
-                    </div>
-                    ` : ''}
 
-                    ${post.targetAudience ? `
-                    <div class="detail-section">
-                        <h2 class="detail-section-title">지원대상</h2>
-                        <div class="detail-section-content">
-                            ${post.targetAudience}
+                        ${post.targetAudience || post.target ? `
+                        <div class="section-block">
+                            <h3>신청방법 및 대상</h3>
+                            <ul>
+                                <li>
+                                    <span class="item-label">신청기간</span>
+                                    <span class="item-value">${post.startDate || '-'} ~ ${post.endDate || ''}</span>
+                                </li>
+                                ${post.applicationUrl ? `
+                                <li>
+                                    <span class="item-label">신청방법</span>
+                                    <span class="item-value">온라인 접수 : <a href="${post.applicationUrl}" target="_blank" style="color:#1a3a6e;">접수 바로가기</a></span>
+                                </li>
+                                ` : ''}
+                                <li>
+                                    <span class="item-label">신청대상</span>
+                                    <span class="item-value">${post.targetAudience || post.target || '전체'}</span>
+                                </li>
+                            </ul>
+                            <p class="highlight" style="margin-top:15px;">• 신청 시 요청하는 정보(개인정보포함)는 사업운영기관에서 관리되오니 이점 반드시 유의하여 주시기 바랍니다.</p>
                         </div>
-                    </div>
-                    ` : ''}
+                        ` : ''}
 
-                    <div class="detail-section">
-                        <h2 class="detail-section-title">기본정보</h2>
-                        <div class="detail-info-grid">
-                            ${post.region ? `
-                            <div class="detail-info-item">
-                                <div class="detail-info-label">지역</div>
-                                <div class="detail-info-value">${post.region}</div>
-                            </div>
-                            ` : ''}
-                            ${post.organization ? `
-                            <div class="detail-info-item">
-                                <div class="detail-info-label">주관기관</div>
-                                <div class="detail-info-value">${post.organization}</div>
-                            </div>
-                            ` : ''}
-                            ${post.phoneNumber ? `
-                            <div class="detail-info-item">
-                                <div class="detail-info-label">연락처</div>
-                                <div class="detail-info-value">${post.phoneNumber}</div>
-                            </div>
-                            ` : ''}
-                            ${post.createdAt ? `
-                            <div class="detail-info-item">
-                                <div class="detail-info-label">등록일</div>
-                                <div class="detail-info-value">${post.createdAt}</div>
-                            </div>
-                            ` : ''}
+                        ${post.address ? `
+                        <div class="section-block">
+                            <h3>행사 장소</h3>
+                            <ul>
+                                <li>
+                                    <span class="item-label">주소</span>
+                                    <span class="item-value">${post.address}</span>
+                                </li>
+                            </ul>
                         </div>
+                        ` : ''}
                     </div>
-                </div>
 
-                ${post.applicationUrl ? `
-                <div class="detail-notice">
-                    <p>* 첨부파일 및 상세 내용은 원본 페이지에서 확인하세요.</p>
-                </div>
-                ` : ''}
-
-                <div class="detail-actions">
-                    ${post.applicationUrl ? `
-                    <a href="${post.applicationUrl}" target="_blank" class="btn-action btn-primary">
-                        원본 페이지 보기
-                    </a>
-                    ` : ''}
-                    <a href="javascript:history.back()" class="btn-action btn-secondary">
-                        목록으로
-                    </a>
+                    <!-- 하단 버튼 -->
+                    <div class="detail-actions">
+                        ${post.applicationUrl ? `
+                        <a href="${post.applicationUrl}" target="_blank" class="btn-action btn-primary">
+                            원본 페이지 보기
+                        </a>
+                        ` : ''}
+                        <a href="javascript:history.back()" class="btn-action btn-secondary">
+                            목록으로
+                        </a>
+                    </div>
                 </div>
             `;
 
