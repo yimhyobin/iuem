@@ -242,66 +242,90 @@
             outline: none;
             background: white;
         }
-        .results-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 20px;
+        .results-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
         }
         .result-card {
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            overflow: hidden;
-            transition: all 0.3s;
+            border: 1px solid #e0e0e0;
+            border-bottom: none;
+            display: flex;
+            align-items: stretch;
+            transition: background 0.2s;
+        }
+        .result-card:first-child {
+            border-radius: 8px 8px 0 0;
+        }
+        .result-card:last-child {
+            border-bottom: 1px solid #e0e0e0;
+            border-radius: 0 0 8px 8px;
+        }
+        .result-card:only-child {
+            border-radius: 8px;
+            border-bottom: 1px solid #e0e0e0;
         }
         .result-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            background: #fafbfc;
         }
-        .card-image {
-            height: 180px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            position: relative;
-            overflow: hidden;
+        .card-dday {
+            width: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-right: 1px solid #f0f0f0;
+            padding: 20px 10px;
         }
-        .card-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .card-badge {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
+        .dday-badge {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
             font-weight: 600;
         }
-        .card-badge.ongoing {
-            background: #4caf50;
-            color: white;
+        .dday-badge.ongoing {
+            background: #fff3e0;
+            color: #ef6c00;
+            border: 2px solid #ffb74d;
         }
-        .card-badge.closed {
-            background: #9e9e9e;
-            color: white;
+        .dday-badge.closed {
+            background: #f5f5f5;
+            color: #999;
+            border: 2px solid #ddd;
         }
-        .card-badge.upcoming {
-            background: #ff9800;
-            color: white;
-        }
-        .card-content {
+        .card-body {
+            flex: 1;
             padding: 20px;
         }
-        .card-category {
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .card-status {
             display: inline-block;
             padding: 4px 10px;
-            background: #f0f4ff;
-            color: #3b5998;
+            border-radius: 4px;
             font-size: 12px;
             font-weight: 600;
-            border-radius: 4px;
-            margin-bottom: 10px;
+        }
+        .card-status.ongoing {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        .card-status.closed {
+            background: #f5f5f5;
+            color: #999;
+        }
+        .card-category {
+            font-size: 13px;
+            color: #3b5998;
+            font-weight: 500;
         }
         .card-title {
             font-size: 17px;
@@ -309,10 +333,6 @@
             color: #333;
             margin: 0 0 12px 0;
             line-height: 1.4;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
         }
         .card-title a {
             color: inherit;
@@ -324,41 +344,56 @@
         .card-info {
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
-            font-size: 13px;
-            color: #888;
+            gap: 20px;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
         }
-        .card-info span {
+        .info-item {
             display: flex;
-            align-items: center;
-            gap: 5px;
+            gap: 6px;
         }
-        .card-footer {
-            padding: 15px 20px;
-            border-top: 1px solid #f0f0f0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .info-label {
+            color: #999;
+        }
+        .info-value {
+            color: #333;
         }
         .card-date {
-            font-size: 13px;
-            color: #888;
+            font-size: 14px;
+            color: #666;
+        }
+        .date-label {
+            color: #999;
+            margin-right: 6px;
+        }
+        .card-footer {
+            width: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-left: 1px solid #f0f0f0;
         }
         .btn-scrap {
-            padding: 6px 12px;
-            background: #f5f5f5;
+            padding: 10px 15px;
+            background: transparent;
             border: none;
-            border-radius: 4px;
             font-size: 13px;
             color: #666;
             cursor: pointer;
             display: flex;
+            flex-direction: column;
             align-items: center;
             gap: 4px;
         }
+        .btn-scrap:hover {
+            color: #3b5998;
+        }
         .btn-scrap.active {
-            background: #fff3cd;
-            color: #856404;
+            color: #f5a623;
+        }
+        .scrap-icon {
+            font-size: 20px;
         }
 
         /* 페이지네이션 */
@@ -451,7 +486,6 @@
                 <span class="logo-text">이음</span>
             </a>
             <nav class="list-nav">
-                <a href="index.html">홈</a>
                 <div class="nav-item-wrap">
                     <a href="list.html?category=support" data-category="support">지원사업</a>
                     <div class="nav-dropdown">
@@ -467,7 +501,14 @@
                     </div>
                 </div>
                 <div class="nav-item-wrap">
-                    <a href="list.html?category=festival" data-category="festival">행사/축제</a>
+                    <a href="list.html?category=seminar" data-category="seminar">행사/세미나</a>
+                    <div class="nav-dropdown">
+                        <a href="list.html?category=seminar&status=ongoing">진행중</a>
+                        <a href="list.html?category=seminar&status=closed">종료</a>
+                    </div>
+                </div>
+                <div class="nav-item-wrap">
+                    <a href="list.html?category=festival" data-category="festival">축제</a>
                     <div class="nav-dropdown">
                         <a href="list.html?category=festival&status=ongoing">진행중</a>
                         <a href="list.html?category=festival&status=closed">종료</a>
@@ -510,7 +551,7 @@
                     <option value="endDate">마감임박순</option>
                 </select>
             </div>
-            <div class="results-grid" id="resultsList">
+            <div class="results-list" id="resultsList">
                 <!-- 동적 생성 -->
             </div>
             <div class="pagination" id="pagination"></div>
@@ -675,33 +716,59 @@
                 const endDate = post.endDate ? new Date(post.endDate) : null;
                 let statusText = '진행중';
                 let statusClass = 'ongoing';
+                let ddayText = '';
 
-                if (endDate && endDate < today) {
-                    statusText = '마감';
-                    statusClass = 'closed';
+                if (endDate) {
+                    const diff = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24));
+                    if (diff < 0) {
+                        statusText = '마감';
+                        statusClass = 'closed';
+                        ddayText = '마감';
+                    } else if (diff === 0) {
+                        ddayText = 'D-Day';
+                    } else {
+                        ddayText = `D-${diff}`;
+                    }
                 }
-
-                const hasImage = post.image || (post.images && post.images.length > 0);
-                const imageUrl = post.images?.[0] || post.image || '';
 
                 return `
                     <div class="result-card">
-                        <div class="card-image" style="${hasImage ? '' : 'background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)'}">
-                            ${hasImage ? `<img src="${imageUrl}" alt="${post.title}" onerror="this.style.display='none'">` : ''}
-                            <span class="card-badge ${statusClass}">${statusText}</span>
+                        <div class="card-dday">
+                            <div class="dday-badge ${statusClass}">
+                                <span>${ddayText || '-'}</span>
+                            </div>
                         </div>
-                        <div class="card-content">
-                            <span class="card-category">${post.supportField || CategoryInfo[post.category]?.title || '지원사업'}</span>
-                            <h3 class="card-title"><a href="detail.html?id=${post.id}">${post.title}</a></h3>
+                        <div class="card-body">
+                            <div class="card-header">
+                                <span class="card-status ${statusClass}">${statusText}</span>
+                                <span class="card-category">${post.supportField || CategoryInfo[post.category]?.title || '지원사업'}</span>
+                            </div>
+                            <h3 class="card-title">
+                                <a href="detail.html?id=${post.id}">${post.title}</a>
+                            </h3>
                             <div class="card-info">
-                                ${post.organization ? `<span>🏢 ${post.organization}</span>` : ''}
-                                ${post.region ? `<span>📍 ${post.region}</span>` : ''}
+                                ${post.organization ? `
+                                <span class="info-item">
+                                    <span class="info-label">주관기관</span>
+                                    <span class="info-value">${post.organization}</span>
+                                </span>
+                                ` : ''}
+                                ${post.region ? `
+                                <span class="info-item">
+                                    <span class="info-label">지역</span>
+                                    <span class="info-value">${post.region}</span>
+                                </span>
+                                ` : ''}
+                            </div>
+                            <div class="card-date">
+                                <span class="date-label">접수기간</span>
+                                ${post.startDate || ''} ~ ${post.endDate || ''}
                             </div>
                         </div>
                         <div class="card-footer">
-                            <span class="card-date">${post.startDate || ''} ~ ${post.endDate || ''}</span>
                             <button class="btn-scrap ${isScraped(post.id) ? 'active' : ''}" onclick="toggleScrap(this, '${post.id}')">
-                                ${isScraped(post.id) ? '★' : '☆'} 스크랩
+                                <span class="scrap-icon">${isScraped(post.id) ? '★' : '☆'}</span>
+                                <span>스크랩</span>
                             </button>
                         </div>
                     </div>
