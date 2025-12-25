@@ -25,12 +25,18 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # 4. 환경변수 및 Firebase 인증 설정
-      - name: Setup credentials
+      # 4. 환경변수 설정
+      - name: Setup environment
         run: |
-          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > serviceAccountKey.json
-          echo "KSTARTUP_API_KEY=${{ secrets.KSTARTUP_API_KEY }}" >> .env
+          echo "KSTARTUP_API_KEY=${{ secrets.KSTARTUP_API_KEY }}" > .env
           echo "FESTIVAL_API_KEY=${{ secrets.FESTIVAL_API_KEY }}" >> .env
+
+      # 5. Firebase 인증 파일 생성
+      - name: Setup Firebase credentials
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          node -e "require('fs').writeFileSync('serviceAccountKey.json', process.env.FIREBASE_SERVICE_ACCOUNT)"
 
       # 5. K-Startup API 데이터 수집
       - name: Fetch K-Startup data
