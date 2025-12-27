@@ -333,6 +333,21 @@
             color: #3b5998;
             font-weight: 500;
         }
+        .badge-new {
+            display: inline-block;
+            padding: 2px 6px;
+            background: #ff5252;
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 3px;
+            margin-left: 8px;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
         .card-title {
             font-size: 17px;
             font-weight: 600;
@@ -698,6 +713,15 @@
                 });
             }
 
+            // 등록일(createdAt) 기준 최신순 정렬
+            if (sort === 'latest' || !sort) {
+                posts.sort((a, b) => {
+                    const dateA = new Date(a.createdAt || '1970-01-01');
+                    const dateB = new Date(b.createdAt || '1970-01-01');
+                    return dateB - dateA;
+                });
+            }
+
             const totalCount = posts.length;
             document.getElementById('totalCount').textContent = totalCount;
 
@@ -738,6 +762,12 @@
                     }
                 }
 
+                // 1주일 이내 등록된 게시글 체크
+                const createdAt = post.createdAt ? new Date(post.createdAt) : null;
+                const oneWeekAgo = new Date();
+                oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+                const isNew = createdAt && createdAt >= oneWeekAgo;
+
                 return `
                     <div class="result-card">
                         <div class="card-dday">
@@ -751,7 +781,7 @@
                                 <span class="card-category">${post.supportField || CategoryInfo[post.category]?.title || '지원사업'}</span>
                             </div>
                             <h3 class="card-title">
-                                <a href="detail.html?id=${post.id}">${post.title}</a>
+                                <a href="detail.html?id=${post.id}">${post.title}</a>${isNew ? '<span class="badge-new">N</span>' : ''}
                             </h3>
                             <div class="card-info">
                                 ${post.organization ? `
