@@ -48,9 +48,9 @@ jobs:
         run: node fetch-festival.js
         continue-on-error: true
 
-      # 7. 천안시 데이터 수집
-      - name: Fetch Cheonan data
-        run: node fetch-cheonan.js
+      # 7. 전국 지자체 행사/세미나 수집 (천안 포함)
+      - name: Fetch nationwide events data
+        run: node fetch-events.js
         continue-on-error: true
 
       # 8. 완료 로그
