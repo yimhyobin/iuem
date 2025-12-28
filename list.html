@@ -221,6 +221,89 @@
             color: white;
         }
 
+        /* 상세검색 */
+        .advanced-search-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: none;
+            border: none;
+            color: #3b5998;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 0;
+            margin-left: auto;
+        }
+        .advanced-search-toggle:hover {
+            text-decoration: underline;
+        }
+        .advanced-search {
+            display: none;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+        .advanced-search.show {
+            display: block;
+        }
+        .advanced-search-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .advanced-search-row:last-child {
+            margin-bottom: 0;
+        }
+        .search-field {
+            flex: 1;
+            min-width: 200px;
+        }
+        .search-field label {
+            display: block;
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        .search-field select,
+        .search-field input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+        }
+        .search-field select:focus,
+        .search-field input:focus {
+            border-color: #3b5998;
+        }
+        .advanced-search-btns {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .btn-search {
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-search.primary {
+            background: #3b5998;
+            color: white;
+        }
+        .btn-search.secondary {
+            background: #f5f5f5;
+            color: #666;
+        }
+
         /* 결과 리스트 */
         .results-section {
             max-width: 1200px;
@@ -562,6 +645,70 @@
                 <button class="filter-tab active" data-status="">전체</button>
                 <button class="filter-tab" data-status="ongoing">모집중</button>
                 <button class="filter-tab" data-status="closed">마감</button>
+                <button class="advanced-search-toggle" onclick="toggleAdvancedSearch()">
+                    <span>상세검색</span>
+                    <span id="toggleIcon">▼</span>
+                </button>
+            </div>
+
+            <!-- 상세검색 패널 -->
+            <div class="advanced-search" id="advancedSearch">
+                <div class="advanced-search-row">
+                    <div class="search-field">
+                        <label>지역</label>
+                        <select id="filterRegion">
+                            <option value="">전체 지역</option>
+                            <option value="서울">서울</option>
+                            <option value="부산">부산</option>
+                            <option value="대구">대구</option>
+                            <option value="인천">인천</option>
+                            <option value="광주">광주</option>
+                            <option value="대전">대전</option>
+                            <option value="울산">울산</option>
+                            <option value="세종">세종</option>
+                            <option value="경기">경기</option>
+                            <option value="강원">강원</option>
+                            <option value="충북">충북</option>
+                            <option value="충남">충남</option>
+                            <option value="전북">전북</option>
+                            <option value="전남">전남</option>
+                            <option value="경북">경북</option>
+                            <option value="경남">경남</option>
+                            <option value="제주">제주</option>
+                            <option value="전국">전국</option>
+                        </select>
+                    </div>
+                    <div class="search-field">
+                        <label>분야</label>
+                        <select id="filterField">
+                            <option value="">전체 분야</option>
+                            <option value="창업">창업</option>
+                            <option value="기술">기술개발(R&D)</option>
+                            <option value="사업화">사업화</option>
+                            <option value="마케팅">마케팅/해외진출</option>
+                            <option value="인력">인력</option>
+                            <option value="연극">연극</option>
+                            <option value="뮤지컬">뮤지컬</option>
+                            <option value="클래식">클래식</option>
+                            <option value="국악">국악</option>
+                            <option value="대중음악">대중음악</option>
+                        </select>
+                    </div>
+                    <div class="search-field">
+                        <label>대상</label>
+                        <select id="filterTarget">
+                            <option value="">전체 대상</option>
+                            <option value="예비창업자">예비창업자</option>
+                            <option value="초기창업">초기창업기업(3년 이하)</option>
+                            <option value="중기창업">중기창업기업(3~7년)</option>
+                            <option value="일반인">일반인</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="advanced-search-btns">
+                    <button class="btn-search secondary" onclick="resetFilters()">초기화</button>
+                    <button class="btn-search primary" onclick="applyFilters()">검색</button>
+                </div>
             </div>
         </div>
 
@@ -686,9 +833,33 @@
             loadResults();
         }
 
+        function toggleAdvancedSearch() {
+            const panel = document.getElementById('advancedSearch');
+            const icon = document.getElementById('toggleIcon');
+            panel.classList.toggle('show');
+            icon.textContent = panel.classList.contains('show') ? '▲' : '▼';
+        }
+
+        function resetFilters() {
+            document.getElementById('filterRegion').value = '';
+            document.getElementById('filterField').value = '';
+            document.getElementById('filterTarget').value = '';
+            document.getElementById('searchKeyword').value = '';
+            currentPage = 1;
+            loadResults();
+        }
+
+        function applyFilters() {
+            currentPage = 1;
+            loadResults();
+        }
+
         async function loadResults() {
             const keyword = document.getElementById('searchKeyword').value.trim();
             const sort = document.getElementById('sortSelect').value;
+            const region = document.getElementById('filterRegion').value;
+            const field = document.getElementById('filterField').value;
+            const target = document.getElementById('filterTarget').value;
 
             const filters = {
                 category: currentCategory,
@@ -697,6 +868,21 @@
             };
 
             let posts = await DataManager.searchPosts(filters);
+
+            // 지역 필터
+            if (region) {
+                posts = posts.filter(post => post.region && post.region.includes(region));
+            }
+
+            // 분야 필터
+            if (field) {
+                posts = posts.filter(post => post.supportField && post.supportField.includes(field));
+            }
+
+            // 대상 필터
+            if (target) {
+                posts = posts.filter(post => post.targetAudience && post.targetAudience.includes(target));
+            }
 
             // 상태 필터
             if (currentStatusFilter) {
