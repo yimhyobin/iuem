@@ -316,11 +316,34 @@ async function fetchBoardList(gov, pageInfo) {
         const titleRegex = /<a[^>]*href="([^"]*)"[^>]*>([^<]+)<\/a>/gi;
         const dateRegex = /\d{4}-\d{2}-\d{2}|\d{4}\.\d{2}\.\d{2}/g;
 
+        // 제외할 키워드 (행사/세미나와 무관한 항목)
+        const excludeKeywords = [
+            '신청', '예약', '문의', '민원', '등록', '접수',
+            '차량', '시험', '고시', '공고', '입법예고',
+            'FAQ', '자주묻는', '서식', '양식', '안내문',
+            '모집', '채용', '구인', '입찰', '계약',
+            '결과발표', '합격자', '당첨자', '선정자'
+        ];
+
+        // 포함해야 할 키워드 (행사/세미나 관련)
+        const includeKeywords = [
+            '행사', '세미나', '축제', '공연', '전시', '페스티벌',
+            '콘서트', '포럼', '컨퍼런스', '워크숍', '워크샵',
+            '강연', '특강', '강좌', '프로그램', '대회', '마라톤',
+            '페어', '박람회', '엑스포', '쇼', '이벤트', '문화',
+            '체험', '투어', '여행', '관광', '캠프', '캠페인'
+        ];
+
         let match;
         const titles = [];
         while ((match = titleRegex.exec(html)) !== null) {
             const href = match[1];
             const title = match[2].trim();
+
+            // 제외 키워드 체크
+            const hasExcludeKeyword = excludeKeywords.some(kw => title.includes(kw));
+            // 포함 키워드 체크 (하나라도 있으면 OK)
+            const hasIncludeKeyword = includeKeywords.some(kw => title.includes(kw));
 
             // 게시글 링크 필터링
             if ((href.includes('view') || href.includes('View') ||
@@ -329,7 +352,9 @@ async function fetchBoardList(gov, pageInfo) {
                  href.includes('boardSeq=') || href.includes('contentUid=')) &&
                 title.length > 5 &&
                 !title.includes('이전') && !title.includes('다음') &&
-                !title.includes('목록') && !title.includes('검색')) {
+                !title.includes('목록') && !title.includes('검색') &&
+                !hasExcludeKeyword &&
+                hasIncludeKeyword) {
                 titles.push({
                     url: href.startsWith('http') ? href : `${gov.baseUrl}${href.startsWith('/') ? '' : '/'}${href}`,
                     title: title.replace(/\s+/g, ' ').trim()
