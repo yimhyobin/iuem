@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\n목록 페이지 개선: 최신 등록순 정렬 및 N 뱃지 추가\n\n- 등록일\\(createdAt\\) 기준 최신순 정렬\n- 1주일 이내 등록된 게시글에 N 뱃지 표시\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git push)"
+    ]
+  }
+}

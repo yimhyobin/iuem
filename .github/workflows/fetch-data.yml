@@ -30,6 +30,7 @@ jobs:
         run: |
           echo "KSTARTUP_API_KEY=${{ secrets.KSTARTUP_API_KEY }}" > .env
           echo "FESTIVAL_API_KEY=${{ secrets.FESTIVAL_API_KEY }}" >> .env
+          echo "KOPIS_API_KEY=${{ secrets.KOPIS_API_KEY }}" >> .env
 
       # 5. Firebase 인증 파일 생성
       - name: Setup Firebase credentials
@@ -53,6 +54,11 @@ jobs:
         run: node fetch-events.js
         continue-on-error: true
 
-      # 8. 완료 로그
+      # 8. KOPIS 공연정보 수집
+      - name: Fetch KOPIS performance data
+        run: node fetch-kopis.js
+        continue-on-error: true
+
+      # 9. 완료 로그
       - name: Complete
         run: echo "✅ 데이터 수집 완료! $(date)"
