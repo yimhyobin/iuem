@@ -302,11 +302,39 @@ async function main() {
 
         console.log(`\n📊 총 ${allPerformances.length}개 활성 공연 수집\n`);
 
-        // 데이터 변환
-        const posts = allPerformances.map(item => transformData(item));
+        // 상세 정보 가져오기 (최대 200개까지만 상세 조회)
+        console.log('📝 상세 정보 조회 중...');
+        const detailedPosts = [];
+        const detailLimit = Math.min(allPerformances.length, 200);
+
+        for (let i = 0; i < allPerformances.length; i++) {
+            const item = allPerformances[i];
+
+            if (i < detailLimit) {
+                // 상세 정보 조회
+                const detail = await fetchPerformanceDetail(item.mt20id);
+                if (detail) {
+                    detailedPosts.push(transformData(item, detail));
+                } else {
+                    detailedPosts.push(transformData(item));
+                }
+
+                if ((i + 1) % 50 === 0) {
+                    console.log(`   ${i + 1}/${detailLimit} 상세 조회 완료`);
+                }
+
+                // API 호출 간격 (0.2초)
+                await new Promise(resolve => setTimeout(resolve, 200));
+            } else {
+                // 나머지는 기본 정보만
+                detailedPosts.push(transformData(item));
+            }
+        }
+
+        console.log(`   상세 조회 완료!\n`);
 
         // Firestore에 저장
-        await saveToFirestore(posts);
+        await saveToFirestore(detailedPosts);
 
         console.log('\n✨ 완료!');
     } catch (error) {

@@ -853,6 +853,103 @@
                             </ul>
                         </div>
                         ` : ''}
+
+                        ${post.source === 'kopis' ? `
+                        <div class="section-block">
+                            <h3>공연 정보</h3>
+                            <ul>
+                                ${post.organization ? `
+                                <li>
+                                    <span class="item-label">공연장</span>
+                                    <span class="item-value">${post.organization}</span>
+                                </li>
+                                ` : ''}
+                                ${post.ticketPrice ? `
+                                <li>
+                                    <span class="item-label">티켓가격</span>
+                                    <span class="item-value">${post.ticketPrice}</span>
+                                </li>
+                                ` : ''}
+                                ${post.runtime ? `
+                                <li>
+                                    <span class="item-label">공연시간</span>
+                                    <span class="item-value">${post.runtime}</span>
+                                </li>
+                                ` : ''}
+                                ${post.showtime ? `
+                                <li>
+                                    <span class="item-label">공연일정</span>
+                                    <span class="item-value">${post.showtime}</span>
+                                </li>
+                                ` : ''}
+                                ${post.cast ? `
+                                <li>
+                                    <span class="item-label">출연진</span>
+                                    <span class="item-value">${post.cast}</span>
+                                </li>
+                                ` : ''}
+                                ${post.targetAudience ? `
+                                <li>
+                                    <span class="item-label">관람연령</span>
+                                    <span class="item-value">${post.targetAudience}</span>
+                                </li>
+                                ` : ''}
+                            </ul>
+                        </div>
+                        ` : ''}
+
+                        ${post.supportContent ? `
+                        <div class="section-block">
+                            <h3>지원내용</h3>
+                            <div class="content-body">
+                                <p>${post.supportContent.replace(/\n/g, '<br>')}</p>
+                            </div>
+                        </div>
+                        ` : ''}
+
+                        ${post.requiredDocs ? `
+                        <div class="section-block">
+                            <h3>제출서류</h3>
+                            <div class="content-body">
+                                <p>${post.requiredDocs.replace(/\n/g, '<br>')}</p>
+                            </div>
+                        </div>
+                        ` : ''}
+
+                        ${post.selectionProcess ? `
+                        <div class="section-block">
+                            <h3>선정절차 및 평가방법</h3>
+                            <div class="content-body">
+                                <p>${post.selectionProcess.replace(/\n/g, '<br>')}</p>
+                            </div>
+                        </div>
+                        ` : ''}
+
+                        ${post.contact || post.phoneNumber ? `
+                        <div class="section-block">
+                            <h3>문의처</h3>
+                            <ul>
+                                ${post.phoneNumber ? `
+                                <li>
+                                    <span class="item-label">전화번호</span>
+                                    <span class="item-value">${post.phoneNumber}</span>
+                                </li>
+                                ` : ''}
+                                ${post.email ? `
+                                <li>
+                                    <span class="item-label">이메일</span>
+                                    <span class="item-value">${post.email}</span>
+                                </li>
+                                ` : ''}
+                                ${post.contact ? `
+                                <li>
+                                    <span class="item-label">담당자</span>
+                                    <span class="item-value">${post.contact}</span>
+                                </li>
+                                ` : ''}
+                            </ul>
+                        </div>
+                        ` : ''}
                     </div>
 
                     <!-- 하단 버튼 -->
