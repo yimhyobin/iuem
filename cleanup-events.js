@@ -22,7 +22,14 @@ const excludeKeywords = [
     '차량', '시험', '고시', '공고', '입법예고',
     'FAQ', '자주묻는', '서식', '양식', '안내문',
     '모집', '채용', '구인', '입찰', '계약',
-    '결과발표', '합격자', '당첨자', '선정자'
+    '결과발표', '합격자', '당첨자', '선정자',
+    '행사계획', '주간행사', '월간행사', '일정표'
+];
+
+// 제외할 패턴 (날짜 범위 형식)
+const excludePatterns = [
+    /\(\d{2}\.\d{1,2}\.\d{1,2}~\d{2}\.\d{1,2}\.\d{1,2}\)/,
+    /\d{4}\.\d{1,2}\.\d{1,2}~\d{4}\.\d{1,2}\.\d{1,2}/
 ];
 
 // 포함해야 할 키워드 (행사/세미나 관련)
@@ -53,11 +60,13 @@ async function cleanupEvents() {
 
             // 제외 키워드 체크
             const hasExcludeKeyword = excludeKeywords.some(kw => title.includes(kw));
+            // 제외 패턴 체크
+            const hasExcludePattern = excludePatterns.some(pattern => pattern.test(title));
             // 포함 키워드 체크
             const hasIncludeKeyword = includeKeywords.some(kw => title.includes(kw));
 
-            // 제외 키워드가 있거나 포함 키워드가 없으면 삭제 대상
-            if (hasExcludeKeyword || !hasIncludeKeyword) {
+            // 제외 키워드/패턴이 있거나 포함 키워드가 없으면 삭제 대상
+            if (hasExcludeKeyword || hasExcludePattern || !hasIncludeKeyword) {
                 toDelete.push({
                     id: doc.id,
                     title: title
