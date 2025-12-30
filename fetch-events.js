@@ -406,7 +406,7 @@ async function fetchBoardList(gov, pageInfo) {
                 image: detail.images[0] || '',
                 images: detail.images,
                 views: 0,
-                createdAt: new Date().toISOString().split('T')[0],
+                createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString(),
                 source: 'local-gov-crawl'
             });

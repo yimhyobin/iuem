@@ -185,8 +185,8 @@ const DataManager = {
         try {
             const newPost = {
                 ...postData,
-                createdAt: new Date().toISOString().split('T')[0],
-                updatedAt: new Date().toISOString().split('T')[0]
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
             };
             const docRef = await db.collection('iuem').add(newPost);
             return { success: true, message: '게시글이 등록되었습니다.', post: { id: docRef.id, ...newPost } };
@@ -200,7 +200,7 @@ const DataManager = {
         try {
             await db.collection('iuem').doc(id).update({
                 ...postData,
-                updatedAt: new Date().toISOString().split('T')[0]
+                updatedAt: new Date().toISOString()
             });
             return { success: true, message: '게시글이 수정되었습니다.' };
         } catch (error) {

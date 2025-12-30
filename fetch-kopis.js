@@ -209,7 +209,7 @@ function transformData(item, detail = null) {
         showtime: data.dtguidance || '',
         cast: data.prfcast || '',
         views: 0,
-        createdAt: new Date().toISOString().split('T')[0],
+        createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         source: 'kopis',
         kopisId: data.mt20id

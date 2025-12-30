@@ -151,7 +151,7 @@ function transformFestivalData(item, additionalImages = []) {
         images: uniqueImages,  // 홍보 이미지 배열
         contentId: item.contentid || '',
         views: 0,
-        createdAt: new Date().toISOString().split('T')[0],
+        createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         source: 'tour-api'
     };

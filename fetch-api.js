@@ -152,7 +152,7 @@ function transformData(item) {
         targetAudience: item.aply_trgt || '',
         applicationUrl: item.detl_pg_url || item.biz_aply_url || '',
         views: 0,
-        createdAt: new Date().toISOString().split('T')[0],
+        createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         source: 'k-startup'
     };
