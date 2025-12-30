@@ -63,8 +63,10 @@
                                 <label for="category">카테고리 <span class="required">*</span></label>
                                 <select id="category" name="category" required>
                                     <option value="">선택하세요</option>
-                                    <option value="support">지원사업/교육</option>
-                                    <option value="event">행사/축제</option>
+                                    <option value="support">지원사업</option>
+                                    <option value="education">교육</option>
+                                    <option value="seminar">행사/세미나</option>
+                                    <option value="festival">축제</option>
                                     <option value="notice">공지사항</option>
                                 </select>
                             </div>
@@ -261,15 +263,8 @@
     <script>
         let uploadedImage = null;
 
-        // 페이지 로드 시
-        document.addEventListener('DOMContentLoaded', function() {
-            const user = Auth.getCurrentUser();
-            if (!user || !user.isAdmin) {
-                alert('관리자 권한이 필요합니다.');
-                window.location.href = 'login.html';
-                return;
-            }
-
+        // 페이지 초기화
+        function initPage(user) {
             document.getElementById('userInfo').textContent = user.userName + '님';
 
             // 수정 모드인지 확인
@@ -288,6 +283,28 @@
                     detailSection.style.display = 'block';
                 }
             });
+        }
+
+        // Firebase 인증 상태 확인 후 페이지 초기화
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                const userDoc = await db.collection('iuem').doc(user.uid).get();
+                if (userDoc.exists && userDoc.data().isAdmin) {
+                    Auth.currentUser = {
+                        uid: user.uid,
+                        email: user.email,
+                        userName: userDoc.data().userName,
+                        isAdmin: true
+                    };
+                    initPage(Auth.currentUser);
+                } else {
+                    alert('관리자 권한이 필요합니다.');
+                    window.location.href = 'login.html';
+                }
+            } else {
+                alert('로그인이 필요합니다.');
+                window.location.href = 'login.html';
+            }
         });
 
         // 로그아웃
