@@ -108,7 +108,7 @@ async function deletePost(id) {
     const result = await DataManager.deletePost(id);
     alert(result.message);
     if (result.success) {
-        loadPosts();
+        await loadPosts();
     }
 }
 
@@ -127,7 +127,7 @@ async function deleteSelected() {
     alert(result.message);
     if (result.success) {
         document.getElementById('checkAll').checked = false;
-        loadPosts();
+        await loadPosts();
     }
 }
 
@@ -215,11 +215,11 @@ function handleImport(event) {
 }
 
 // 전체 데이터 삭제
-function clearAllData() {
+async function clearAllData() {
     if (!confirm('모든 게시글 데이터가 삭제됩니다. 계속하시겠습니까?')) return;
     if (!confirm('이 작업은 되돌릴 수 없습니다. 정말 삭제하시겠습니까?')) return;
 
-    const result = DataManager.clearAll();
+    const result = await DataManager.clearAll();
     alert(result.message);
-    loadPosts();
+    await loadPosts();
 }
