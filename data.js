@@ -147,12 +147,13 @@ const DataManager = {
         }
     },
 
-    getPostsByCategory: async function(category) {
+    getPostsByCategory: async function(category, limit = 100) {
         try {
             let query = db.collection('iuem');
             if (category !== 'all') {
                 query = query.where('category', '==', category);
             }
+            query = query.limit(limit);
             const snapshot = await query.get();
             // 게시글만 필터링 (category 필드가 있는 문서만)
             const posts = snapshot.docs
