@@ -154,7 +154,10 @@ const DataManager = {
                 query = query.where('category', '==', category);
             }
             const snapshot = await query.get();
-            const posts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            // 게시글만 필터링 (category 필드가 있는 문서만)
+            const posts = snapshot.docs
+                .map(doc => ({ id: doc.id, ...doc.data() }))
+                .filter(doc => doc.category);
             // 클라이언트에서 정렬
             posts.sort((a, b) => {
                 const dateA = new Date(b.createdAt || '1970-01-01');
