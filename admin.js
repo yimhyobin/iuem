@@ -3,8 +3,8 @@
  */
 
 // 게시글 목록 로드
-function loadPosts(category = 'all') {
-    const posts = DataManager.getPostsByCategory(category);
+async function loadPosts(category = 'all') {
+    const posts = await DataManager.getPostsByCategory(category);
     const tbody = document.getElementById('postTableBody');
 
     if (posts.length === 0) {
@@ -43,8 +43,8 @@ function loadPosts(category = 'all') {
 }
 
 // 회원 목록 로드
-function loadUsers() {
-    const users = Auth.getAllUsers();
+async function loadUsers() {
+    const users = await Auth.getAllUsers();
     const tbody = document.getElementById('userTableBody');
 
     if (users.length === 0) {
@@ -102,10 +102,10 @@ function editPost(id) {
 }
 
 // 게시글 삭제
-function deletePost(id) {
+async function deletePost(id) {
     if (!confirm('정말 삭제하시겠습니까?')) return;
 
-    const result = DataManager.deletePost(id);
+    const result = await DataManager.deletePost(id);
     alert(result.message);
     if (result.success) {
         loadPosts();
@@ -113,7 +113,7 @@ function deletePost(id) {
 }
 
 // 선택 삭제
-function deleteSelected() {
+async function deleteSelected() {
     const checkboxes = document.querySelectorAll('.post-check:checked');
     if (checkboxes.length === 0) {
         alert('삭제할 게시글을 선택해주세요.');
@@ -123,7 +123,7 @@ function deleteSelected() {
     if (!confirm(`${checkboxes.length}개의 게시글을 삭제하시겠습니까?`)) return;
 
     const ids = Array.from(checkboxes).map(cb => cb.value);
-    const result = DataManager.deletePosts(ids);
+    const result = await DataManager.deletePosts(ids);
     alert(result.message);
     if (result.success) {
         document.getElementById('checkAll').checked = false;
@@ -132,10 +132,10 @@ function deleteSelected() {
 }
 
 // 관리자 권한 부여
-function grantAdmin(userId) {
+async function grantAdmin(userId) {
     if (!confirm(`${userId}에게 관리자 권한을 부여하시겠습니까?`)) return;
 
-    const result = Auth.grantAdmin(userId);
+    const result = await Auth.grantAdmin(userId);
     alert(result.message);
     if (result.success) {
         loadUsers();
@@ -143,10 +143,10 @@ function grantAdmin(userId) {
 }
 
 // 관리자 권한 해제
-function revokeAdmin(userId) {
+async function revokeAdmin(userId) {
     if (!confirm(`${userId}의 관리자 권한을 해제하시겠습니까?`)) return;
 
-    const result = Auth.revokeAdmin(userId);
+    const result = await Auth.revokeAdmin(userId);
     alert(result.message);
     if (result.success) {
         loadUsers();
