@@ -243,7 +243,45 @@ const DataManager = {
 
     searchPosts: async function(filters, limit = 300) {
         try {
-            let posts = await this.getAllPosts(limit);
+            let posts = [];
+
+            // 카테고리별로 Firestore에서 직접 쿼리
+            if (filters.category && filters.category !== 'all') {
+                let firestoreCategory = filters.category;
+
+                // support/education은 Firestore에서 'support' 카테고리
+                if (filters.category === 'support' || filters.category === 'education') {
+                    firestoreCategory = 'support';
+                }
+                // seminar/festival은 Firestore에서 'event' 카테고리
+                else if (filters.category === 'seminar' || filters.category === 'festival') {
+                    firestoreCategory = 'event';
+                }
+
+                const snapshot = await db.collection('iuem')
+                    .where('category', '==', firestoreCategory)
+                    .limit(limit)
+                    .get();
+                posts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                // 클라이언트에서 세부 필터링
+                switch (filters.category) {
+                    case 'support':
+                        posts = posts.filter(post => !isEducationField(post.supportField));
+                        break;
+                    case 'education':
+                        posts = posts.filter(post => isEducationField(post.supportField));
+                        break;
+                    case 'seminar':
+                        posts = posts.filter(post => post.source !== 'tour-api');
+                        break;
+                    case 'festival':
+                        posts = posts.filter(post => post.source === 'tour-api');
+                        break;
+                }
+            } else {
+                posts = await this.getAllPosts(limit);
+            }
 
             if (filters.keyword) {
                 const keyword = filters.keyword.toLowerCase();
@@ -252,41 +290,6 @@ const DataManager = {
                     (post.summary && post.summary.toLowerCase().includes(keyword)) ||
                     (post.content && post.content.toLowerCase().includes(keyword))
                 );
-            }
-
-            if (filters.category && filters.category !== 'all') {
-                switch (filters.category) {
-                    case 'support':
-                        // 지원사업: category='support' AND 교육 분야 제외
-                        posts = posts.filter(post =>
-                            post.category === 'support' &&
-                            !isEducationField(post.supportField)
-                        );
-                        break;
-                    case 'education':
-                        // 교육: category='support' AND 교육 분야
-                        posts = posts.filter(post =>
-                            post.category === 'support' &&
-                            isEducationField(post.supportField)
-                        );
-                        break;
-                    case 'seminar':
-                        // 행사/세미나: category='event' AND TourAPI 아닌 것
-                        posts = posts.filter(post =>
-                            post.category === 'event' &&
-                            post.source !== 'tour-api'
-                        );
-                        break;
-                    case 'festival':
-                        // 축제: category='event' AND TourAPI 데이터
-                        posts = posts.filter(post =>
-                            post.category === 'event' &&
-                            post.source === 'tour-api'
-                        );
-                        break;
-                    default:
-                        posts = posts.filter(post => post.category === filters.category);
-                }
             }
 
             if (filters.regions && filters.regions.length > 0) {
