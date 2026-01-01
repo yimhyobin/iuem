@@ -129,11 +129,14 @@ const DataManager = {
         }
     },
 
-    getAllPosts: async function() {
+    getAllPosts: async function(limit = 200) {
         try {
-            // orderBy 없이 가져온 후 클라이언트에서 정렬 (인덱스 불필요)
-            const snapshot = await db.collection('iuem').get();
-            const posts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            // limit 적용하여 가져오기
+            const snapshot = await db.collection('iuem').limit(limit).get();
+            // 게시글만 필터링 (category 필드가 있는 문서만)
+            const posts = snapshot.docs
+                .map(doc => ({ id: doc.id, ...doc.data() }))
+                .filter(doc => doc.category);
             // 클라이언트에서 정렬
             posts.sort((a, b) => {
                 const dateA = new Date(b.createdAt || '1970-01-01');
@@ -147,7 +150,7 @@ const DataManager = {
         }
     },
 
-    getPostsByCategory: async function(category, limit = 100) {
+    getPostsByCategory: async function(category, limit = 30) {
         try {
             let query = db.collection('iuem');
             if (category !== 'all') {
@@ -238,9 +241,9 @@ const DataManager = {
         }
     },
 
-    searchPosts: async function(filters) {
+    searchPosts: async function(filters, limit = 300) {
         try {
-            let posts = await this.getAllPosts();
+            let posts = await this.getAllPosts(limit);
 
             if (filters.keyword) {
                 const keyword = filters.keyword.toLowerCase();
