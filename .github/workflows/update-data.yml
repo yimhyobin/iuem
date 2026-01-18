@@ -1,0 +1,43 @@
+name: 데이터 자동 업데이트
+
+on:
+  schedule:
+    # 매일 오전 9시 (한국시간) 실행 = UTC 0시
+    - cron: '0 0 * * *'
+  workflow_dispatch: # 수동 실행 가능
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 코드 체크아웃
+        uses: actions/checkout@v4
+
+      - name: Node.js 설정
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 의존성 설치
+        run: npm install
+
+      - name: 환경변수 설정
+        run: |
+          echo "KSTARTUP_API_KEY=${{ secrets.KSTARTUP_API_KEY }}" >> .env
+          echo "FESTIVAL_API_KEY=${{ secrets.FESTIVAL_API_KEY }}" >> .env
+          echo "KOPIS_API_KEY=${{ secrets.KOPIS_API_KEY }}" >> .env
+
+      - name: Firebase 서비스 계정 키 설정
+        run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > serviceAccountKey.json
+
+      - name: K-Startup 데이터 업데이트
+        run: node fetch-api.js
+
+      - name: 축제 데이터 업데이트
+        run: node fetch-festival.js
+
+      - name: 행사 데이터 업데이트
+        run: node fetch-events.js
+        continue-on-error: true # 일부 사이트 실패해도 계속 진행
